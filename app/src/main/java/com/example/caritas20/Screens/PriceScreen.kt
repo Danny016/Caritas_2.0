@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -107,52 +109,72 @@ fun PriceScreen(navController: NavController){
 
 @Composable
 fun PriceTable(){
-    Column (
+    Card (
         modifier = Modifier
             .padding(16.dp)
-            .border(2.dp, Color.Black, RoundedCornerShape(8.dp))
-            .wrapContentSize()
-            .fillMaxWidth()
-            .background(Color(0xFFE8C6EC))
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8C6EC)) // Fondo morado claro
     ){
-        Row (
+        Column (
             modifier = Modifier
+                .padding(16.dp)
                 .fillMaxWidth()
-                .border(2.dp, Color.Black)
-                .background(Color(0xFF66BFFF)),
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text("Blanca", Modifier.padding(8.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(2.dp, Color.Black)
+                    .background(Color(0xFF66BFFF)),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("Blanca", Modifier.padding(8.dp))
+            }
+            ContentRow("No.", "Cantidad", "Precio")
+            ContentRow("0", "1000", "$100.00")
+            ContentRow("1", "1000", "$100.00")
+            ContentRow("2", "1000", "$100.00")
+            ContentRow("3", "1000", "$100.00")
+            ContentRow("4", "1000", "$100.00")
+            ContentRow("4 1/2", "100", "$100.00")
+            ContentRow("5", "100", "$100.00")
+            ContentRow("6", "1", "$100.00")
+            ContentRow("7", "1", "$100.00")
         }
-        ContentRow("No.","Cantidad", "Precio")
-        ContentRow("0","1000", "$100.00")
-        ContentRow("1","1000", "$100.00")
-        ContentRow("2","1000", "$100.00")
-        ContentRow("3","1000", "$100.00")
-        ContentRow("4","1000", "$100.00")
-        ContentRow("4 1/2","100", "$100.00")
-        ContentRow("5","100", "$100.00")
-        ContentRow("6","1", "$100.00")
-        ContentRow("7","1", "$100.00")
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(2.dp, Color.Black)
-                .background(Color(0xFF66BFFF)),
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text("Color", Modifier.padding(8.dp))
-        }
-        ContentRow("No.","Cantidad", "Precio")
-        ContentRow("0","1000", "$100.00")
-        ContentRow("1","1000", "$100.00")
-        ContentRow("2","1000", "$100.00")
-        ContentRow("3","1000", "$100.00")
-        ContentRow("4","1000", "$100.00")
-        ContentRow("4 1/2","100", "$100.00")
-        ContentRow("5","100", "$100.00")
-        ContentRow("6","1", "$100.00")
-        ContentRow("7","1", "$100.00")
     }
-
+    Card (
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8C6EC)) // Fondo morado claro
+    ){
+        Column (
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ){
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(2.dp, Color.Black)
+                    .background(Color(0xFF66BFFF)),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text("Color", Modifier.padding(8.dp))
+            }
+            ContentRow("No.","Cantidad", "Precio")
+            ContentRow("0","1000", "$100.00")
+            ContentRow("1","1000", "$100.00")
+            ContentRow("2","1000", "$100.00")
+            ContentRow("3","1000", "$100.00")
+            ContentRow("4","1000", "$100.00")
+            ContentRow("4 1/2","100", "$100.00")
+            ContentRow("5","100", "$100.00")
+            ContentRow("6","1", "$100.00")
+            ContentRow("7","1", "$100.00")
+        }
+    }
 }
