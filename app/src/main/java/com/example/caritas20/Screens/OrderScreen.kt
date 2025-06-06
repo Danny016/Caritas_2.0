@@ -164,14 +164,14 @@ fun OrderTable(){
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8C6EC)) // Fondo morado claro
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF8CE5CA))
     ){
         Column (
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ){
-            ContentRow("No.","Cantidad", "Subtotal")
+            ContentRow("No.","Cantidad", "Subtotal", backgroundColor = Color(0xFFB38BEE))
         }
     }
 

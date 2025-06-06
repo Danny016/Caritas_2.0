@@ -115,7 +115,7 @@ fun PriceTable(){
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8C6EC)) // Fondo morado claro
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF8CE5CA))
     ){
         Column (
             modifier = Modifier
@@ -131,7 +131,7 @@ fun PriceTable(){
             ) {
                 Text("Blanca", Modifier.padding(8.dp))
             }
-            ContentRow("No.", "Cantidad", "Precio")
+            ContentRow("No.", "Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
             ContentRow("0", "1000", "$100.00")
             ContentRow("1", "1000", "$100.00")
             ContentRow("2", "1000", "$100.00")
@@ -149,7 +149,7 @@ fun PriceTable(){
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8C6EC)) // Fondo morado claro
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF8CE5CA)) // Fondo morado claro
     ){
         Column (
             modifier = Modifier
@@ -165,7 +165,7 @@ fun PriceTable(){
             ){
                 Text("Color", Modifier.padding(8.dp))
             }
-            ContentRow("No.","Cantidad", "Precio")
+            ContentRow("No.","Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
             ContentRow("0","1000", "$100.00")
             ContentRow("1","1000", "$100.00")
             ContentRow("2","1000", "$100.00")
