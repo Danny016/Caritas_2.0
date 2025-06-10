@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -124,12 +125,26 @@ fun PriceTable(){
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .border(2.dp, Color.Black)
-                    .background(Color(0xFF66BFFF)),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text("Blanca", Modifier.padding(8.dp))
+                Card(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF66BFFF))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text("Blanca", Modifier.padding(8.dp))
+                    }
+                }
+
             }
             ContentRow("No.", "Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
             ContentRow("0", "1000", "$100.00")
@@ -158,12 +173,25 @@ fun PriceTable(){
         ){
             Row (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .border(2.dp, Color.Black)
-                    .background(Color(0xFF66BFFF)),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ){
-                Text("Color", Modifier.padding(8.dp))
+                Card(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF66BFFF))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text("Color", Modifier.padding(8.dp))
+                    }
+                }
             }
             ContentRow("No.","Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
             ContentRow("0","1000", "$100.00")
