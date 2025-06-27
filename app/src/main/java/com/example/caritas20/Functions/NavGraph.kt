@@ -7,8 +7,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.caritas20.Screens.AddScreen
 import com.example.caritas20.Screens.GaleryScreen
 import com.example.caritas20.Screens.HomeScreen
+import com.example.caritas20.Screens.ModifyScreen
 import com.example.caritas20.Screens.OrderScreen
 import com.example.caritas20.Screens.PriceScreen
+
 
 @Composable
 fun Nav(){
@@ -28,6 +30,9 @@ fun Nav(){
         }
         composable(route  ="Add"){
             AddScreen(NavController)
+        }
+        composable(route = "Modify"){
+            ModifyScreen(NavController)
         }
     }
 }

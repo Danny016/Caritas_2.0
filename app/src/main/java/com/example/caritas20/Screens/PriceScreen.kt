@@ -85,7 +85,9 @@ fun PriceScreen(navController: NavController){
             }
             item {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("Modify")
+                    },
                     modifier = Modifier.padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF66BFFF),
@@ -152,7 +154,6 @@ fun PriceTable(){
             ContentRow("2", "1000", "$100.00")
             ContentRow("3", "1000", "$100.00")
             ContentRow("4", "1000", "$100.00")
-            ContentRow("4 1/2", "100", "$100.00")
             ContentRow("5", "100", "$100.00")
             ContentRow("6", "1", "$100.00")
             ContentRow("7", "1", "$100.00")
@@ -199,7 +200,6 @@ fun PriceTable(){
             ContentRow("2","1000", "$100.00")
             ContentRow("3","1000", "$100.00")
             ContentRow("4","1000", "$100.00")
-            ContentRow("4 1/2","100", "$100.00")
             ContentRow("5","100", "$100.00")
             ContentRow("6","1", "$100.00")
             ContentRow("7","1", "$100.00")

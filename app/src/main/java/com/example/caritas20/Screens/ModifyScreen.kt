@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
@@ -52,13 +51,13 @@ import com.example.caritas20.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController){
+fun ModifyScreen(navController: NavController){
     val optionsRadioB = listOf("Blanca", "Color")
-    val optionsNumber = listOf("0", "1","2","3","4","5","6","7")
+    val optionsNumber = listOf("0", "1","2","3","4","4 1/2","5","6","7")
     var selectedOptionRadioB by remember { mutableStateOf(optionsRadioB[0]) }
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(optionsNumber[0]) }
-    var value by remember { mutableStateOf("") }
+    var newPrice by remember { mutableStateOf("") }
 
     Column (modifier = Modifier
         .fillMaxSize(),
@@ -71,7 +70,7 @@ fun AddScreen(navController: NavController){
             title = { Text(text = "Agregar piezas", ) },
             navigationIcon = {
                 IconButton(onClick = {
-                    navController.navigate("Order")
+                    navController.navigate("Price")
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
                 }
@@ -96,21 +95,21 @@ fun AddScreen(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-             item {
-                 Text("Tipo:", fontSize = 24.sp)
-                 optionsRadioB.forEach { text ->
-                     Row(
-                         verticalAlignment = Alignment.CenterVertically,
-                         modifier = Modifier.padding(vertical = 4.dp)
-                     ) {
-                         RadioButton(
-                             selected = (text == selectedOptionRadioB),
-                             onClick = { selectedOptionRadioB = text }
-                         )
-                         Text(text = text)
-                     }
-                 }
-             }
+            item {
+                Text("Tipo:", fontSize = 24.sp)
+                optionsRadioB.forEach { text ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOptionRadioB),
+                            onClick = { selectedOptionRadioB = text }
+                        )
+                        Text(text = text)
+                    }
+                }
+            }
             item {
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -153,9 +152,9 @@ fun AddScreen(navController: NavController){
             }
             item {
                 OutlinedTextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    label = { Text("Cantidad") },
+                    value = newPrice,
+                    onValueChange = { newPrice = it },
+                    label = { Text("Nuevo Precio:") },
                     modifier = Modifier.padding(8.dp)
                         .width(250.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -181,7 +180,7 @@ fun AddScreen(navController: NavController){
                             .size(24.dp),
                         Color.White
                     )
-                    Text("Agregar")
+                    Text("Confirmar")
                 }
             }
         }
