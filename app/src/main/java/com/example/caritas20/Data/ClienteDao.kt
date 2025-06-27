@@ -8,6 +8,9 @@ interface ClienteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cliente: Cliente)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAndGetId(cliente: Cliente): Long
+
     @Update
     suspend fun update(cliente: Cliente)
 

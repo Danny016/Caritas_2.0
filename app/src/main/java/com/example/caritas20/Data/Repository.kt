@@ -34,6 +34,10 @@ class Repository(
         clienteDao.insert(cliente)
     }
     
+    suspend fun insertClienteAndGetId(cliente: Cliente): Long = withContext(Dispatchers.IO) {
+        clienteDao.insertAndGetId(cliente)
+    }
+    
     suspend fun updateCliente(cliente: Cliente) = withContext(Dispatchers.IO) {
         clienteDao.update(cliente)
     }
