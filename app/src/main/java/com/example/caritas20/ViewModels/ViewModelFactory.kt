@@ -29,6 +29,9 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(GaleryViewModel::class.java) -> {
                 GaleryViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(DetailsViewModel::class.java) -> {
+                DetailsViewModel(repository) as T
+            }
             modelClass.isAssignableFrom(SharedViewModel::class.java) -> {
                 SharedViewModel() as T
             }

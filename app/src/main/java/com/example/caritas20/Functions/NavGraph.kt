@@ -1,10 +1,13 @@
 package com.example.caritas20.Functions
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.caritas20.Screens.AddScreen
+import com.example.caritas20.Screens.DetailsScreen
 import com.example.caritas20.Screens.GaleryScreen
 import com.example.caritas20.Screens.HomeScreen
 import com.example.caritas20.Screens.ModifyScreen
@@ -34,6 +37,15 @@ fun Nav(viewModelFactory: ViewModelFactory){
         }
         composable(route = "Modify"){
             ModifyScreen(NavController, viewModelFactory = viewModelFactory)
+        }
+        composable(
+            route = "Details/{clienteId}",
+            arguments = listOf(
+                navArgument("clienteId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val clienteId = backStackEntry.arguments?.getInt("clienteId") ?: 0
+            DetailsScreen(NavController, viewModelFactory, clienteId)
         }
     }
 }

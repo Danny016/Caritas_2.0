@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -112,9 +113,13 @@ fun HomeScreen(
                     items(uiState.clientesConPedidos.size) { index ->
                         val cliente = uiState.clientesConPedidos[index]
                         PedidoCard(
+                            clienteId = cliente.id_cliente,
                             clienteName = cliente.nombre,
                             panaderia = cliente.panaderia,
                             totalPedidos = cliente.totalPedidos,
+                            onCardClick = { 
+                                navController.navigate("Details/${cliente.id_cliente}")
+                            },
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                         )
                     }
@@ -185,13 +190,17 @@ fun HomeScreen(
 
 @Composable
 fun PedidoCard(
+    clienteId: Int,
     clienteName: String,
     panaderia: String,
     totalPedidos: Int,
+    onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onCardClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F4FD))
