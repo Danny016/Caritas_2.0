@@ -35,7 +35,7 @@ fun ContentRow(
 
         Card(
             modifier = Modifier
-                .padding(4.dp)
+                .padding(2.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             shape = RoundedCornerShape(8.dp),
@@ -52,7 +52,7 @@ fun ContentRow(
 
         Card(
             modifier = Modifier
-                .padding(4.dp)
+                .padding(2.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             shape = RoundedCornerShape(8.dp),
@@ -69,7 +69,7 @@ fun ContentRow(
 
         Card(
             modifier = Modifier
-                .padding(4.dp)
+                .padding(2.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             shape = RoundedCornerShape(8.dp),

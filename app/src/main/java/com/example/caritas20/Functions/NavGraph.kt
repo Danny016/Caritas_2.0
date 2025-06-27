@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.caritas20.Screens.AddScreen
 import com.example.caritas20.Screens.GaleryScreen
 import com.example.caritas20.Screens.HomeScreen
 import com.example.caritas20.Screens.OrderScreen
@@ -24,6 +25,9 @@ fun Nav(){
         }
         composable (route = "Order") {
             OrderScreen(NavController)
+        }
+        composable(route  ="Add"){
+            AddScreen(NavController)
         }
     }
 }
