@@ -81,4 +81,12 @@ class Repository(
     suspend fun deleteAllBlancas() = withContext(Dispatchers.IO) {
         blancasDao.deleteAll()
     }
+
+    suspend fun getAllColoresOnce(): List<ProductoColor> = withContext(Dispatchers.IO) {
+        colorDao.getAllColoresOnce()
+    }
+
+    suspend fun getAllBlancasOnce(): List<Blancas> = withContext(Dispatchers.IO) {
+        blancasDao.getAllBlancasOnce()
+    }
 } 

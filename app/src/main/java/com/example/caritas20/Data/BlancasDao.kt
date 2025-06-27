@@ -17,6 +17,9 @@ interface BlancasDao {
     @Query("SELECT * FROM Blancas")
     fun getAllBlancas(): Flow<List<Blancas>>
 
+    @Query("SELECT * FROM Blancas")
+    suspend fun getAllBlancasOnce(): List<Blancas>
+
     @Query("SELECT * FROM Blancas WHERE numero = :numero")
     suspend fun getByNumero(numero: Int): Blancas?
 

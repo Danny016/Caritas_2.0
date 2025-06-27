@@ -17,6 +17,9 @@ interface ColorDao {
     @Query("SELECT * FROM producto_color")
     fun getAllColores(): Flow<List<ProductoColor>>
 
+    @Query("SELECT * FROM producto_color")
+    suspend fun getAllColoresOnce(): List<ProductoColor>
+
     @Query("SELECT * FROM producto_color WHERE numero = :numero")
     suspend fun getByNumero(numero: Int): ProductoColor?
 }
