@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,10 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,17 +45,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.caritas20.Functions.ContentRow
 import com.example.caritas20.R
+import com.example.caritas20.ViewModels.OrderViewModel
+import com.example.caritas20.ViewModels.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderScreen(navController: NavController){
-
-    var name by remember { mutableStateOf("") }
-    var bakery by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+fun OrderScreen(
+    navController: NavController,
+    viewModelFactory: ViewModelFactory
+){
+    val orderViewModel: OrderViewModel = viewModel(factory = viewModelFactory)
+    val uiState by orderViewModel.uiState.collectAsState()
 
     Column (modifier = Modifier
         .fillMaxSize(),
@@ -85,82 +89,106 @@ fun OrderScreen(navController: NavController){
                 )
             }
         )
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(color = Color.White),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            item{
-                Text("Datos del Cliente:", fontSize = 24.sp)
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Nombre") },
-                    modifier = Modifier.padding(8.dp)
-                        .fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = bakery,
-                    onValueChange = { bakery = it },
-                    label = { Text("Panadería") },
-                    modifier = Modifier.padding(8.dp)
-                        .fillMaxWidth()
-                )
-                Text("Pedido:", fontSize = 24.sp)
-                OrderTable()
+        
+        if (uiState.isLoading) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+                Text("Procesando...", modifier = Modifier.padding(16.dp))
             }
-            item {
-                Button(
-                    onClick = {
-                        navController.navigate("Add")
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF66BFFF),
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
-                    border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
+        } else {
+            LazyColumn (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(color = Color.White),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                item{
+                    Text("Datos del Cliente:", fontSize = 24.sp)
+                    OutlinedTextField(
+                        value = uiState.clienteName,
+                        onValueChange = { orderViewModel.updateClienteName(it) },
+                        label = { Text("Nombre") },
                         modifier = Modifier.padding(8.dp)
-                            .size(24.dp),
-                        Color.White
+                            .fillMaxWidth()
                     )
-                    Text("Agregar Piezas")
+                    OutlinedTextField(
+                        value = uiState.panaderia,
+                        onValueChange = { orderViewModel.updatePanaderia(it) },
+                        label = { Text("Panadería") },
+                        modifier = Modifier.padding(8.dp)
+                            .fillMaxWidth()
+                    )
+                    Text("Pedido:", fontSize = 24.sp)
+                    OrderTable()
                 }
-            }
-            item {
-                Button(
-                    onClick = {
-                        showDialog = true
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF66BFFF),
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
-                    border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = null,
-                        modifier = Modifier.padding(8.dp)
-                            .size(24.dp),
-                        Color.White
-                    )
-                    Text("Confirmar Pedido")
+                item {
+                    Button(
+                        onClick = {
+                            navController.navigate("Add")
+                        },
+                        modifier = Modifier.padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF66BFFF),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                        border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp)
+                                .size(24.dp),
+                            Color.White
+                        )
+                        Text("Agregar Piezas")
+                    }
+                }
+                item {
+                    Button(
+                        onClick = {
+                            orderViewModel.showConfirmDialog()
+                        },
+                        modifier = Modifier.padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF66BFFF),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                        border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp)
+                                .size(24.dp),
+                            Color.White
+                        )
+                        Text("Confirmar Pedido")
+                    }
                 }
             }
         }
-        if (showDialog) {
-            ConfirmDialog(onDismiss = { showDialog = false })
+        
+        if (uiState.showConfirmDialog) {
+            ConfirmDialog(
+                onDismiss = { orderViewModel.hideConfirmDialog() },
+                onConfirm = { orderViewModel.confirmOrder() }
+            )
+        }
+    }
+    
+    // Handle success navigation
+    LaunchedEffect(uiState.success) {
+        if (uiState.success) {
+            orderViewModel.clearSuccess()
+            navController.navigate("Home")
         }
     }
 }
@@ -183,12 +211,10 @@ fun OrderTable(){
             ContentRow("No.","Cantidad", "Subtotal", backgroundColor = Color(0xFFB38BEE))
         }
     }
-
-
 }
 
 @Composable
-fun ConfirmDialog(onDismiss: () -> Unit) {
+fun ConfirmDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -198,21 +224,13 @@ fun ConfirmDialog(onDismiss: () -> Unit) {
             Text("¿Deseas continuar con esta acción?")
         },
         confirmButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("Sí")
+            Button(onClick = onConfirm) {
+                Text("Confirmar")
             }
         },
         dismissButton = {
-            Button(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("No")
+            Button(onClick = onDismiss) {
+                Text("Cancelar")
             }
         }
     )

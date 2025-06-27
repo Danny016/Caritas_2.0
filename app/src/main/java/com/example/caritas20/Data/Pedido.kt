@@ -2,19 +2,20 @@ package com.example.caritas20.Data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = Color::class,
-            parentColumns = ["id"],
+            entity = ProductoColor::class,
+            parentColumns = ["numero"],
             childColumns = ["id_producto"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Blancas::class,
-            parentColumns = ["id"],
+            parentColumns = ["numero"],
             childColumns = ["id_producto"],
             onDelete = ForeignKey.CASCADE
         ),
@@ -24,11 +25,15 @@ import androidx.room.PrimaryKey
             childColumns = ["id_cliente"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["id_producto"]),
+        Index(value = ["id_cliente"])
     ]
 )
 data class Pedido(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val id_producto: String, // Puede ser id de Color o Blancas
+    val id_producto: String, // Puede ser numero de ProductoColor o Blancas (guardado como String)
     val cantidad: Int,
     val id_cliente: Int
 )

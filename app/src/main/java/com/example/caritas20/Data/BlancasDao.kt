@@ -1,6 +1,7 @@
 package com.example.caritas20.Data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BlancasDao {
@@ -14,8 +15,11 @@ interface BlancasDao {
     suspend fun delete(blancas: Blancas)
 
     @Query("SELECT * FROM Blancas")
-    suspend fun getAll(): List<Blancas>
+    fun getAllBlancas(): Flow<List<Blancas>>
 
-    @Query("SELECT * FROM Blancas WHERE id = :id")
-    suspend fun getById(id: String): Blancas?
+    @Query("SELECT * FROM Blancas WHERE numero = :numero")
+    suspend fun getByNumero(numero: Int): Blancas?
+
+    @Query("DELETE FROM Blancas")
+    suspend fun deleteAll()
 }

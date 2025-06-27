@@ -1,6 +1,7 @@
 package com.example.caritas20.Data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PedidoDao {
@@ -15,7 +16,7 @@ interface PedidoDao {
     suspend fun delete(pedido: Pedido)
 
     @Query("SELECT * FROM Pedido")
-    suspend fun getAll(): List<Pedido>
+    fun getAll(): Flow<List<Pedido>>
 
     @Query("SELECT * FROM Pedido WHERE id = :id")
     suspend fun getById(id: Int): Pedido?
@@ -32,6 +33,21 @@ interface PedidoDao {
         FROM Pedido
         INNER JOIN Cliente ON Pedido.id_cliente = Cliente.id_cliente
     """)
-    suspend fun getPedidosConCliente(): List<PedidoConCliente>
+    fun getAllPedidos(): Flow<List<PedidoConCliente>>
+    
+    @Query("""
+        SELECT 
+            Pedido.id AS id,
+            Pedido.id_producto AS id_producto,
+            Pedido.cantidad AS cantidad,
+            Pedido.id_cliente AS id_cliente,
+            Cliente.id_cliente AS cliente_id_cliente,
+            Cliente.nombre AS cliente_nombre,
+            Cliente.panaderia AS cliente_panaderia
+        FROM Pedido
+        INNER JOIN Cliente ON Pedido.id_cliente = Cliente.id_cliente
+        WHERE Pedido.id_cliente = :idCliente
+    """)
+    fun getPedidosByCliente(idCliente: Int): Flow<List<PedidoConCliente>>
 }
 

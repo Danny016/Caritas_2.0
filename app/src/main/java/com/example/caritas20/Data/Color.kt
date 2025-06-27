@@ -3,9 +3,9 @@ package com.example.caritas20.Data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class Color(
-    @PrimaryKey val id: String,  // Ejemplo: C1, C2...
+@Entity(tableName = "producto_color")
+data class ProductoColor(
+    @PrimaryKey val numero: Int,  // 0 al 7
     val cantidad: Int,
     val precio: Double
 )

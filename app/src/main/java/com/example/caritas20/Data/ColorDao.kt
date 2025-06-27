@@ -1,21 +1,22 @@
 package com.example.caritas20.Data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ColorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(color: Color)
+    suspend fun insert(color: ProductoColor)
 
     @Update
-    suspend fun update(color: Color)
+    suspend fun update(color: ProductoColor)
 
     @Delete
-    suspend fun delete(color: Color)
+    suspend fun delete(color: ProductoColor)
 
-    @Query("SELECT * FROM Color")
-    suspend fun getAll(): List<Color>
+    @Query("SELECT * FROM producto_color")
+    fun getAllColores(): Flow<List<ProductoColor>>
 
-    @Query("SELECT * FROM Color WHERE id = :id")
-    suspend fun getById(id: String): Color?
+    @Query("SELECT * FROM producto_color WHERE numero = :numero")
+    suspend fun getByNumero(numero: Int): ProductoColor?
 }

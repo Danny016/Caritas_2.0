@@ -10,29 +10,31 @@ import com.example.caritas20.Screens.HomeScreen
 import com.example.caritas20.Screens.ModifyScreen
 import com.example.caritas20.Screens.OrderScreen
 import com.example.caritas20.Screens.PriceScreen
+import com.example.caritas20.ViewModels.ViewModelFactory
 
 
 @Composable
-fun Nav(){
+fun Nav(viewModelFactory: ViewModelFactory){
     val NavController = rememberNavController()
     NavHost(navController = NavController, startDestination = "Home"){
         composable(route = "Home") {
-            HomeScreen(navController = NavController)
+            HomeScreen(navController = NavController, viewModelFactory = viewModelFactory)
         }
         composable(route = "Galery") {
-            GaleryScreen(NavController)
+            GaleryScreen(NavController, viewModelFactory = viewModelFactory)
         }
         composable(route = "Price") {
-            PriceScreen(NavController)
+            PriceScreen(NavController, viewModelFactory = viewModelFactory)
         }
         composable (route = "Order") {
-            OrderScreen(NavController)
+            OrderScreen(NavController, viewModelFactory = viewModelFactory)
         }
         composable(route  ="Add"){
-            AddScreen(NavController)
+            AddScreen(NavController, viewModelFactory = viewModelFactory)
         }
         composable(route = "Modify"){
-            ModifyScreen(NavController)
+            ModifyScreen(NavController, viewModelFactory = viewModelFactory)
         }
     }
 }
+

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Blancas(
-    @PrimaryKey val id: String,  // Ejemplo: B1, B2...
+    @PrimaryKey val numero: Int,  // 0 al 7
     val cantidad: Int,
     val precio: Double
 )

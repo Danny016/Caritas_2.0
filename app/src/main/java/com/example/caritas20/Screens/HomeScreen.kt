@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +35,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.caritas20.R
+import com.example.caritas20.ViewModels.HomeViewModel
+import com.example.caritas20.ViewModels.ViewModelFactory
 import kotlin.system.exitProcess
 
 @OptIn(ExperimentalMaterial3Api::class)
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(
+    navController: NavController,
+    viewModelFactory: ViewModelFactory
+){
+    val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory)
+    val uiState by homeViewModel.uiState.collectAsState()
+    
     Column (modifier = Modifier
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -68,73 +80,92 @@ fun HomeScreen(navController: NavController){
                 )
             }
         )
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(color = Color.White),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            item {
-                Text("No Hay Pedidos", fontSize = 32.sp, modifier = Modifier.padding(40.dp))
+        
+        if (uiState.isLoading) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+                Text("Cargando...", modifier = Modifier.padding(16.dp))
             }
-            item {
-                Button(onClick = {
-                    navController.navigate("Order")
-                },
-                    modifier = Modifier.padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF66BFFF),
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
-                    border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
-                ) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = null,
+        } else {
+            LazyColumn (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .background(color = Color.White),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                if (uiState.pedidos.isEmpty()) {
+                    item {
+                        Text("No Hay Pedidos", fontSize = 32.sp, modifier = Modifier.padding(40.dp))
+                    }
+                } else {
+                    item {
+                        Text("Pedidos: ${uiState.pedidos.size}", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
+                    }
+                }
+                
+                item {
+                    Button(onClick = {
+                        navController.navigate("Order")
+                    },
                         modifier = Modifier.padding(8.dp),
-                        Color.White)
-                    Text("Agregar Pedido")
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF66BFFF),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                        border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
+                    ) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = null,
+                            modifier = Modifier.padding(8.dp),
+                            Color.White)
+                        Text("Agregar Pedido")
+                    }
                 }
-            }
-            item {
-                Button(onClick = {
-                    navController.navigate("Price")
-                },
-                    modifier = Modifier.padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF66BFFF),
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
-                    border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.lprecios,),
-                        contentDescription = null,
-                        modifier = Modifier.padding(8.dp)
-                            .size(24.dp),
-                        Color.White)
-                    Text("Tabla de Precios")
+                item {
+                    Button(onClick = {
+                        navController.navigate("Price")
+                    },
+                        modifier = Modifier.padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF66BFFF),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                        border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
+                    ) {
+                        Icon(painter = painterResource(id = R.drawable.lprecios,),
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp)
+                                .size(24.dp),
+                            Color.White)
+                        Text("Tabla de Precios")
+                    }
                 }
-            }
-            item {
-                Button(onClick = {
-                    navController.navigate("Galery")
-                },
-                    modifier = Modifier.padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF66BFFF),
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
-                    border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.galery,),
-                        contentDescription = null,
-                        modifier = Modifier.padding(8.dp)
-                            .size(24.dp),
-                        Color.White)
-                    Text("Galería")
+                item {
+                    Button(onClick = {
+                        navController.navigate("Galery")
+                    },
+                        modifier = Modifier.padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF66BFFF),
+                            contentColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                        border = BorderStroke(2.dp, Color.Black), // Borde negro de 2dp
+                    ) {
+                        Icon(painter = painterResource(id = R.drawable.galery,),
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp)
+                                .size(24.dp),
+                            Color.White)
+                        Text("Galería")
+                    }
                 }
             }
         }

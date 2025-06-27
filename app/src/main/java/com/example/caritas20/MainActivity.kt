@@ -11,16 +11,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.caritas20.Functions.Nav
+import com.example.caritas20.ViewModels.ViewModelFactory
 import com.example.caritas20.ui.theme.Caritas20Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Get repository from Application class
+        val repository = (application as CaritasApplication).repository
+        val viewModelFactory = ViewModelFactory(repository)
+        
         setContent {
             Caritas20Theme {
-                Nav()
+                Nav(viewModelFactory = viewModelFactory)
             }
         }
     }
