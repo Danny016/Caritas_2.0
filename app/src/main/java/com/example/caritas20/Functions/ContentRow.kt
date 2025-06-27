@@ -25,6 +25,7 @@ fun ContentRow(
     number: String,
     amount: String,
     price: String,
+    subtotal: String? = null,
     backgroundColor: Color = Color(0xFFE8C6EC) // Color por defecto si no se pasa uno
 ) {
     Row(
@@ -81,6 +82,26 @@ fun ContentRow(
                 contentAlignment = Alignment.Center
             ){
                 Text(text = price, Modifier.padding(8.dp))
+            }
+        }
+        
+        // Cuarta columna para subtotal (solo si se proporciona)
+        if (subtotal != null) {
+            Card(
+                modifier = Modifier
+                    .padding(2.dp)
+                    .weight(1f),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(containerColor = backgroundColor)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(text = subtotal, Modifier.padding(8.dp))
+                }
             }
         }
     }

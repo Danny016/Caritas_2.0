@@ -2,7 +2,7 @@ package com.example.caritas20.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.caritas20.Data.PedidoConCliente
+import com.example.caritas20.Data.ClienteConPedidos
 import com.example.caritas20.Data.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
-    val pedidos: List<PedidoConCliente> = emptyList(),
+    val clientesConPedidos: List<ClienteConPedidos> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -23,16 +23,16 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     
     init {
-        loadPedidos()
+        loadClientesConPedidos()
     }
     
-    private fun loadPedidos() {
+    private fun loadClientesConPedidos() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                repository.getAllPedidos().collect { pedidos ->
+                repository.getClientesConPedidos().collect { clientes ->
                     _uiState.value = _uiState.value.copy(
-                        pedidos = pedidos,
+                        clientesConPedidos = clientes,
                         isLoading = false,
                         error = null
                     )
@@ -46,8 +46,8 @@ class HomeViewModel(
         }
     }
     
-    fun refreshPedidos() {
-        loadPedidos()
+    fun refreshClientesConPedidos() {
+        loadClientesConPedidos()
     }
     
     fun clearError() {

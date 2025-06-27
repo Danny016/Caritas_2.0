@@ -3,6 +3,14 @@ package com.example.caritas20.Data
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
+// Data class for grouped orders by client
+data class ClienteConPedidos(
+    val id_cliente: Int,
+    val nombre: String,
+    val panaderia: String,
+    val totalPedidos: Int
+)
+
 @Dao
 interface PedidoDao {
 
@@ -49,5 +57,19 @@ interface PedidoDao {
         WHERE Pedido.id_cliente = :idCliente
     """)
     fun getPedidosByCliente(idCliente: Int): Flow<List<PedidoConCliente>>
+    
+    @Query("""
+        SELECT 
+            Cliente.id_cliente AS id_cliente,
+            Cliente.nombre AS nombre,
+            Cliente.panaderia AS panaderia,
+            COUNT(Pedido.id) AS totalPedidos
+        FROM Cliente
+        LEFT JOIN Pedido ON Cliente.id_cliente = Pedido.id_cliente
+        GROUP BY Cliente.id_cliente, Cliente.nombre, Cliente.panaderia
+        HAVING COUNT(Pedido.id) > 0
+        ORDER BY Cliente.nombre
+    """)
+    fun getClientesConPedidos(): Flow<List<ClienteConPedidos>>
 }
 

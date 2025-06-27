@@ -54,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -161,13 +162,56 @@ fun OrderScreen(
                     // Blancas Table
                     if (uiState.tempBlancas.isNotEmpty()) {
                         Text("Piezas Blancas:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
-                        TempOrderTable(pieces = uiState.tempBlancas, tipo = "Blanca")
+                        TempOrderTable(
+                            pieces = uiState.tempBlancas, 
+                            tipo = "Blanca",
+                            subtotal = orderViewModel.calcularSubtotalBlancas(),
+                            orderViewModel = orderViewModel
+                        )
                     }
                     
                     // Colores Table
                     if (uiState.tempColores.isNotEmpty()) {
                         Text("Piezas Color:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
-                        TempOrderTable(pieces = uiState.tempColores, tipo = "Color")
+                        TempOrderTable(
+                            pieces = uiState.tempColores, 
+                            tipo = "Color",
+                            subtotal = orderViewModel.calcularSubtotalColores(),
+                            orderViewModel = orderViewModel
+                        )
+                    }
+                    
+                    // Total General
+                    if (uiState.tempBlancas.isNotEmpty() || uiState.tempColores.isNotEmpty()) {
+                        Card(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF66BFFF))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "TOTAL A PAGAR",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "$${String.format("%.2f", orderViewModel.calcularTotal())}",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
                     }
                 }
                 item {
@@ -286,7 +330,12 @@ fun OrderTable(){
 }
 
 @Composable
-fun TempOrderTable(pieces: List<com.example.caritas20.ViewModels.TempPiece>, tipo: String) {
+fun TempOrderTable(
+    pieces: List<com.example.caritas20.ViewModels.TempPiece>, 
+    tipo: String, 
+    subtotal: Double,
+    orderViewModel: com.example.caritas20.ViewModels.OrderViewModel
+) {
     Card (
         modifier = Modifier
             .padding(8.dp)
@@ -302,13 +351,42 @@ fun TempOrderTable(pieces: List<com.example.caritas20.ViewModels.TempPiece>, tip
                 .padding(12.dp)
                 .fillMaxWidth()
         ){
-            ContentRow("No.", "Cantidad", "Tipo", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.", "Cantidad", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
             pieces.forEach { piece ->
+                val precioPorUnidad = if (tipo == "Blanca") {
+                    orderViewModel.getPrecioBlanca(piece.numero)
+                } else {
+                    orderViewModel.getPrecioColor(piece.numero)
+                }
+                val subtotalFila = piece.cantidad * precioPorUnidad
                 ContentRow(
                     number = piece.numero.toString(),
                     amount = piece.cantidad.toString(),
-                    price = piece.tipo,
+                    price = "$${String.format("%.2f", precioPorUnidad)}",
+                    subtotal = "$${String.format("%.2f", subtotalFila)}",
                     backgroundColor = if (tipo == "Blanca") Color(0xFFF8F8F8) else Color(0xFFF0F8FF)
+                )
+            }
+            
+            // Subtotal de la tabla
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Subtotal $tipo:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF333333)
+                )
+                Text(
+                    text = "$${String.format("%.2f", subtotal)}",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF66BFFF)
                 )
             }
         }

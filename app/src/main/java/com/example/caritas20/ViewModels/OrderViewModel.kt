@@ -25,6 +25,8 @@ data class OrderUiState(
     val pedidos: List<PedidoConCliente> = emptyList(),
     val tempBlancas: List<TempPiece> = emptyList(),
     val tempColores: List<TempPiece> = emptyList(),
+    val preciosBlancas: List<com.example.caritas20.Data.Blancas> = emptyList(),
+    val preciosColores: List<com.example.caritas20.Data.ProductoColor> = emptyList(),
     val showConfirmDialog: Boolean = false,
     val showAddPiecesDialog: Boolean = false,
     val isLoading: Boolean = false,
@@ -39,6 +41,32 @@ class OrderViewModel(
     
     private val _uiState = MutableStateFlow(OrderUiState())
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
+    
+    init {
+        loadPrecios()
+    }
+    
+    private fun loadPrecios() {
+        viewModelScope.launch {
+            try {
+                repository.getAllBlancas().collect { blancas ->
+                    _uiState.value = _uiState.value.copy(preciosBlancas = blancas)
+                }
+            } catch (e: Exception) {
+                // Handle error silently for now
+            }
+        }
+        
+        viewModelScope.launch {
+            try {
+                repository.getAllColores().collect { colores ->
+                    _uiState.value = _uiState.value.copy(preciosColores = colores)
+                }
+            } catch (e: Exception) {
+                // Handle error silently for now
+            }
+        }
+    }
     
     fun updateClienteName(name: String) {
         _uiState.value = _uiState.value.copy(clienteName = name)
@@ -172,5 +200,41 @@ class OrderViewModel(
                 error = null
             )
         }
+    }
+    
+    fun getPrecioBlanca(numero: Int): Double {
+        val blanca = _uiState.value.preciosBlancas.find { it.numero == numero }
+        return if (blanca != null && blanca.cantidad > 0) {
+            blanca.precio / blanca.cantidad // Precio por unidad
+        } else {
+            0.0
+        }
+    }
+    
+    fun getPrecioColor(numero: Int): Double {
+        val color = _uiState.value.preciosColores.find { it.numero == numero }
+        return if (color != null && color.cantidad > 0) {
+            color.precio / color.cantidad // Precio por unidad
+        } else {
+            0.0
+        }
+    }
+    
+    fun calcularSubtotalBlancas(): Double {
+        return _uiState.value.tempBlancas.sumOf { piece ->
+            val precioPorUnidad = getPrecioBlanca(piece.numero)
+            piece.cantidad * precioPorUnidad
+        }
+    }
+    
+    fun calcularSubtotalColores(): Double {
+        return _uiState.value.tempColores.sumOf { piece ->
+            val precioPorUnidad = getPrecioColor(piece.numero)
+            piece.cantidad * precioPorUnidad
+        }
+    }
+    
+    fun calcularTotal(): Double {
+        return calcularSubtotalBlancas() + calcularSubtotalColores()
     }
 } 

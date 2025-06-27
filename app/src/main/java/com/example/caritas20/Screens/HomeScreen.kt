@@ -103,17 +103,18 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                if (uiState.pedidos.isEmpty()) {
+                if (uiState.clientesConPedidos.isEmpty()) {
                     item {
                         Text("No Hay Pedidos", fontSize = 32.sp, modifier = Modifier.padding(40.dp))
                     }
                 } else {
-                    // Show pedidos as cards
-                    items(uiState.pedidos.size) { index ->
-                        val pedido = uiState.pedidos[index]
+                    // Show clientes with pedidos as cards
+                    items(uiState.clientesConPedidos.size) { index ->
+                        val cliente = uiState.clientesConPedidos[index]
                         PedidoCard(
-                            clienteName = pedido.cliente.nombre,
-                            panaderia = pedido.cliente.panaderia,
+                            clienteName = cliente.nombre,
+                            panaderia = cliente.panaderia,
+                            totalPedidos = cliente.totalPedidos,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                         )
                     }
@@ -186,6 +187,7 @@ fun HomeScreen(
 fun PedidoCard(
     clienteName: String,
     panaderia: String,
+    totalPedidos: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -214,7 +216,14 @@ fun PedidoCard(
             Text(
                 text = panaderia,
                 fontSize = 16.sp,
-                color = Color(0xFF666666)
+                color = Color(0xFF666666),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = "Total de pedidos: $totalPedidos",
+                fontSize = 14.sp,
+                color = Color(0xFF888888),
+                fontWeight = FontWeight.Medium
             )
         }
     }

@@ -29,6 +29,9 @@ class Repository(
     fun getPedidosByCliente(idCliente: Int): Flow<List<PedidoConCliente>> = 
         pedidoDao.getPedidosByCliente(idCliente)
     
+    fun getClientesConPedidos(): Flow<List<com.example.caritas20.Data.ClienteConPedidos>> = 
+        pedidoDao.getClientesConPedidos()
+    
     // Cliente operations
     suspend fun insertCliente(cliente: Cliente) = withContext(Dispatchers.IO) {
         clienteDao.insert(cliente)
