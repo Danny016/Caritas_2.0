@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 
@@ -36,10 +37,10 @@ fun ContentRow(
 
         Card(
             modifier = Modifier
-                .padding(2.dp)
+                .padding(1.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(6.dp),
             colors = CardDefaults.cardColors(containerColor = backgroundColor),
         ) {
             Box(
@@ -47,16 +48,20 @@ fun ContentRow(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ){
-                Text(text = number, Modifier.padding(8.dp))
+                Text(
+                    text = number, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
             }
         }
 
         Card(
             modifier = Modifier
-                .padding(2.dp)
+                .padding(1.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(6.dp),
             colors = CardDefaults.cardColors(containerColor = backgroundColor)
         ) {
             Box(
@@ -64,16 +69,20 @@ fun ContentRow(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ){
-                Text(text = amount, Modifier.padding(8.dp))
+                Text(
+                    text = amount, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
             }
         }
 
         Card(
             modifier = Modifier
-                .padding(2.dp)
+                .padding(1.dp)
                 .weight(1f),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(6.dp),
             colors = CardDefaults.cardColors(containerColor = backgroundColor)
         ) {
             Box(
@@ -81,7 +90,11 @@ fun ContentRow(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ){
-                Text(text = price, Modifier.padding(8.dp))
+                Text(
+                    text = price, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
             }
         }
         
@@ -89,10 +102,10 @@ fun ContentRow(
         if (subtotal != null) {
             Card(
                 modifier = Modifier
-                    .padding(2.dp)
+                    .padding(1.dp)
                     .weight(1f),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(6.dp),
                 colors = CardDefaults.cardColors(containerColor = backgroundColor)
             ) {
                 Box(
@@ -100,7 +113,11 @@ fun ContentRow(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
-                    Text(text = subtotal, Modifier.padding(8.dp))
+                    Text(
+                        text = subtotal, 
+                        modifier = Modifier.padding(4.dp),
+                        fontSize = 12.sp
+                    )
                 }
             }
         }

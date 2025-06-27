@@ -338,7 +338,7 @@ fun TempOrderTable(
 ) {
     Card (
         modifier = Modifier
-            .padding(8.dp)
+            .padding(4.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(8.dp),
@@ -348,10 +348,10 @@ fun TempOrderTable(
     ){
         Column (
             modifier = Modifier
-                .padding(12.dp)
+                .padding(8.dp)
                 .fillMaxWidth()
         ){
-            ContentRow("No.", "Cantidad", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
             pieces.forEach { piece ->
                 val precioPorUnidad = if (tipo == "Blanca") {
                     orderViewModel.getPrecioBlanca(piece.numero)
@@ -372,19 +372,19 @@ fun TempOrderTable(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = 6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Subtotal $tipo:",
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
                 )
                 Text(
                     text = "$${String.format("%.2f", subtotal)}",
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF66BFFF)
                 )
