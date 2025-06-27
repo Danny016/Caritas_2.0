@@ -74,6 +74,16 @@ fun DetailsScreen(
         detailsViewModel.loadPedidosByCliente(clienteId)
     }
     
+    // Handle navigation to home when all orders are deleted
+    LaunchedEffect(uiState.shouldNavigateToHome) {
+        if (uiState.shouldNavigateToHome) {
+            detailsViewModel.clearNavigationState()
+            navController.navigate("Home") {
+                popUpTo("Home") { inclusive = true }
+            }
+        }
+    }
+    
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -317,9 +327,7 @@ fun DetailsScreen(
                         onClick = {
                             if (pedidoToDelete == -1) {
                                 // Delete all orders for this client
-                                uiState.pedidosConCliente.forEach { pedidoConCliente ->
-                                    detailsViewModel.deletePedido(pedidoConCliente.pedido.id)
-                                }
+                                detailsViewModel.deleteAllPedidos()
                             } else {
                                 // Delete specific order
                                 pedidoToDelete?.let { detailsViewModel.deletePedido(it) }

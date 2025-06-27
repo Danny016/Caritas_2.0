@@ -17,7 +17,8 @@ data class DetailsUiState(
     val preciosColores: List<com.example.caritas20.Data.ProductoColor> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val success: Boolean = false
+    val success: Boolean = false,
+    val shouldNavigateToHome: Boolean = false
 )
 
 class DetailsViewModel(
@@ -55,7 +56,7 @@ class DetailsViewModel(
     
     fun loadPedidosByCliente(idCliente: Int) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, shouldNavigateToHome = false)
             try {
                 repository.getPedidosByCliente(idCliente).collect { pedidos ->
                     if (pedidos.isNotEmpty()) {
@@ -68,9 +69,11 @@ class DetailsViewModel(
                             error = null
                         )
                     } else {
+                        // If no orders found, navigate to home
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = "No se encontraron pedidos para este cliente"
+                            shouldNavigateToHome = true,
+                            error = null
                         )
                     }
                 }
@@ -98,6 +101,27 @@ class DetailsViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = e.message ?: "Error al eliminar el pedido"
+                )
+            }
+        }
+    }
+    
+    fun deleteAllPedidos() {
+        viewModelScope.launch {
+            try {
+                val currentPedidos = _uiState.value.pedidosConCliente
+                if (currentPedidos.isNotEmpty()) {
+                    val clienteId = currentPedidos.first().pedido.id_cliente
+                    // Delete all orders
+                    currentPedidos.forEach { pedidoConCliente ->
+                        repository.deletePedido(pedidoConCliente.pedido)
+                    }
+                    // Navigate to home since all orders are deleted
+                    _uiState.value = _uiState.value.copy(shouldNavigateToHome = true)
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = e.message ?: "Error al eliminar los pedidos"
                 )
             }
         }
@@ -153,5 +177,9 @@ class DetailsViewModel(
     
     fun clearSuccess() {
         _uiState.value = _uiState.value.copy(success = false)
+    }
+    
+    fun clearNavigationState() {
+        _uiState.value = _uiState.value.copy(shouldNavigateToHome = false)
     }
 } 
