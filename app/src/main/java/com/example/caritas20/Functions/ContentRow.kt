@@ -123,3 +123,129 @@ fun ContentRow(
         }
     }
 }
+
+@Composable
+fun ContentRow(
+    number: String,
+    type: String,
+    amount: String,
+    price: String,
+    subtotal: String,
+    backgroundColor: Color = Color(0xFFE8C6EC)
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        // Número
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = number, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        // Tipo
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = type, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        // Cantidad
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = amount, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+
+        // Precio
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = price, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+        
+        // Subtotal
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = subtotal, 
+                    modifier = Modifier.padding(4.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+}

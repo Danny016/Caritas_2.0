@@ -178,27 +178,12 @@ fun DetailsScreen(
                 val blancas = uiState.pedidosConCliente.filter { it.pedido.id_producto.toIntOrNull() != null }
                 val colores = uiState.pedidosConCliente.filter { it.pedido.id_producto.toIntOrNull() == null }
                 
-                if (blancas.isNotEmpty()) {
+                if (uiState.pedidosConCliente.isNotEmpty()) {
                     item {
-                        Text("Piezas Blancas:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
-                        DetailsOrderTable(
-                            pieces = blancas,
-                            tipo = "Blanca",
-                            detailsViewModel = detailsViewModel,
-                            onDelete = { pedidoId ->
-                                pedidoToDelete = pedidoId
-                                showDeleteDialog = true
-                            }
-                        )
-                    }
-                }
-                
-                if (colores.isNotEmpty()) {
-                    item {
-                        Text("Piezas Color:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
-                        DetailsOrderTable(
-                            pieces = colores,
-                            tipo = "Color",
+                        Text("Detalles del Pedido:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
+                        CombinedOrderTable(
+                            blancas = blancas,
+                            colores = colores,
                             detailsViewModel = detailsViewModel,
                             onDelete = { pedidoId ->
                                 pedidoToDelete = pedidoId
@@ -355,9 +340,9 @@ fun DetailsScreen(
 }
 
 @Composable
-fun DetailsOrderTable(
-    pieces: List<com.example.caritas20.Data.PedidoConCliente>,
-    tipo: String,
+fun CombinedOrderTable(
+    blancas: List<com.example.caritas20.Data.PedidoConCliente>,
+    colores: List<com.example.caritas20.Data.PedidoConCliente>,
     detailsViewModel: DetailsViewModel,
     onDelete: (Int) -> Unit
 ) {
@@ -367,9 +352,7 @@ fun DetailsOrderTable(
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (tipo == "Blanca") Color(0xFFF0F0F0) else Color(0xFFE8F4FD)
-        )
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
     ) {
         Column(
             modifier = Modifier
@@ -377,29 +360,33 @@ fun DetailsOrderTable(
                 .fillMaxWidth()
         ) {
             ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
-            pieces.forEach { pedidoConCliente ->
+            blancas.forEach { pedidoConCliente ->
                 val numero = pedidoConCliente.pedido.id_producto.toInt()
-                val precioPorUnidad = if (tipo == "Blanca") {
-                    detailsViewModel.getPrecioBlanca(numero)
-                } else {
-                    detailsViewModel.getPrecioColor(numero)
-                }
+                val precioPorUnidad = detailsViewModel.getPrecioBlanca(numero)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
                 ContentRow(
                     number = pedidoConCliente.pedido.id_producto,
                     amount = pedidoConCliente.pedido.cantidad.toString(),
                     price = "$${String.format("%.2f", precioPorUnidad)}",
                     subtotal = "$${String.format("%.2f", subtotalFila)}",
-                    backgroundColor = if (tipo == "Blanca") Color(0xFFF8F8F8) else Color(0xFFF0F8FF)
+                    backgroundColor = Color(0xFFF8F8F8)
+                )
+            }
+            colores.forEach { pedidoConCliente ->
+                val numero = pedidoConCliente.pedido.id_producto.toInt()
+                val precioPorUnidad = detailsViewModel.getPrecioColor(numero)
+                val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
+                ContentRow(
+                    number = pedidoConCliente.pedido.id_producto,
+                    amount = pedidoConCliente.pedido.cantidad.toString(),
+                    price = "$${String.format("%.2f", precioPorUnidad)}",
+                    subtotal = "$${String.format("%.2f", subtotalFila)}",
+                    backgroundColor = Color(0xFFF0F8FF)
                 )
             }
             
             // Subtotal de la tabla
-            val subtotal = if (tipo == "Blanca") {
-                detailsViewModel.calcularSubtotalBlancas()
-            } else {
-                detailsViewModel.calcularSubtotalColores()
-            }
+            val subtotal = detailsViewModel.calcularSubtotalBlancas() + detailsViewModel.calcularSubtotalColores()
             
             Row(
                 modifier = Modifier
@@ -409,7 +396,7 @@ fun DetailsOrderTable(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Subtotal $tipo:",
+                    text = "Subtotal Total:",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
