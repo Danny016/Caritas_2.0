@@ -237,7 +237,7 @@ fun OrderScreen(
                         onClick = {
                             orderViewModel.showAddPiecesDialog()
                         },
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(8.dp).wrapContentSize(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF66BFFF),
                             contentColor = Color.Black
@@ -260,7 +260,7 @@ fun OrderScreen(
                         onClick = {
                             orderViewModel.showConfirmDialog()
                         },
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(8.dp).wrapContentSize(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF66BFFF),
                             contentColor = Color.Black

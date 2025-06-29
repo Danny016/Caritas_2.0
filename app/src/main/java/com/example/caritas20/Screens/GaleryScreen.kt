@@ -50,9 +50,6 @@ fun GaleryScreen(
     navController: NavController,
     viewModelFactory: ViewModelFactory
 ){
-    val galeryViewModel: GaleryViewModel = viewModel(factory = viewModelFactory)
-    val uiState by galeryViewModel.uiState.collectAsState()
-
     Column (modifier = Modifier
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -82,54 +79,15 @@ fun GaleryScreen(
             }
         )
         
-        if (uiState.isLoading) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
-                Text("Cargando galería...", modifier = Modifier.padding(16.dp))
-            }
-        } else {
-            LazyColumn (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .background(color = Color.White),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                if (uiState.pedidos.isEmpty()) {
-                    item {
-                        Text("No hay pedidos en la galería", fontSize = 24.sp, modifier = Modifier.padding(40.dp))
-                    }
-                } else {
-                    item {
-                        Text("Pedidos: ${uiState.pedidos.size}", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
-                    }
-                    
-                    items(uiState.pedidos) { pedido ->
-                        Card(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxWidth(),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA))
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Text("Cliente: ${pedido.cliente?.nombre ?: "N/A"}", fontSize = 18.sp)
-                                Text("Panadería: ${pedido.cliente?.panaderia ?: "N/A"}", fontSize = 16.sp)
-                                Text("Cantidad: ${pedido.pedido.cantidad}", fontSize = 16.sp)
-                                Text("Producto ID: ${pedido.pedido.id_producto}", fontSize = 14.sp)
-                            }
-                        }
-                    }
-                }
-            }
+        // Contenido vacío
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Pantalla limpia
         }
     }
 }

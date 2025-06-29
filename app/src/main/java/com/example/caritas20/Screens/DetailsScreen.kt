@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -257,10 +258,10 @@ fun DetailsScreen(
                                     navController.navigate("Order/$clienteId/$clienteName/$panaderia")
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.wrapContentSize(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF4CAF50),
-                                contentColor = Color.White
+                                containerColor = Color(0xFF66BFFF),
+                                contentColor = Color.Black
                             ),
                             shape = RoundedCornerShape(8.dp),
                             border = BorderStroke(2.dp, Color.Black)
@@ -282,7 +283,7 @@ fun DetailsScreen(
                                     navController.navigate("Modify/$clienteId")
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.wrapContentSize(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF66BFFF),
                                 contentColor = Color.Black
@@ -307,7 +308,7 @@ fun DetailsScreen(
                                     showDeleteDialog = true
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.wrapContentSize(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFFF6B6B),
                                 contentColor = Color.White
