@@ -399,7 +399,7 @@ fun BlancasOrderTable(
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFE8C6EC))
             blancas.forEach { pedidoConCliente ->
                 val precioPorUnidad = detailsViewModel.getPrecioBlanca(pedidoConCliente.pedido.id_producto)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
@@ -457,7 +457,7 @@ fun ColoresOrderTable(
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFE8C6EC))
             colores.forEach { pedidoConCliente ->
                 val precioPorUnidad = detailsViewModel.getPrecioColor(pedidoConCliente.pedido.id_producto)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad

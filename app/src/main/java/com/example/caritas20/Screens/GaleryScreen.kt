@@ -50,44 +50,35 @@ fun GaleryScreen(
     navController: NavController,
     viewModelFactory: ViewModelFactory
 ){
-    Column (modifier = Modifier
-        .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
         TopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color(0xFF66BFFF)
             ),
-            title = { Text(text = "Galería", ) },
-            navigationIcon = {
-                IconButton(onClick = {
-                    navController.navigate("Home")
-                }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
-                }
-            },
-            actions = {
-                Image(
-                    painter = painterResource(id= R.drawable.logo),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .padding(4.dp),
-                )
-            }
+            title = { Text(text = "Galería") }
         )
-        
-        // Contenido vacío
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White),
+                .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-            // Pantalla limpia
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(180.dp)
+            )
+            Text(
+                text = "Aquí debería haber una galería",
+                fontSize = 20.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 32.dp)
+            )
         }
     }
 }

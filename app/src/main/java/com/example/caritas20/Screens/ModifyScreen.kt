@@ -178,7 +178,7 @@ fun ModifyScreen(
                                 modifier = Modifier.padding(16.dp)
                             ) {
                                 // Header de la tabla
-                                TableRow("Campo", "Valor", backgroundColor = Color(0xFFB38BEE))
+                                TableRow("Campo", "Valor", backgroundColor = Color(0xFFE8C6EC))
                                 
                                 // Tipo de producto
                                 TableRow(
