@@ -133,7 +133,7 @@ fun AddScreen(
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = uiState.selectedNumber.toString(),
+                            value = uiState.selectedNumber,
                             onValueChange = {},
                             label = { Text("Selecciona un número") },
                             trailingIcon = {
@@ -148,15 +148,16 @@ fun AddScreen(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
                         ) {
+                            val suffix = if (uiState.selectedTipo == "Blanca") "B" else "C"
                             optionsNumber.forEach { number ->
                                 DropdownMenuItem(
                                     text = { Text(
-                                        text = number.toString(),
+                                        text = "$number$suffix",
                                         modifier = Modifier.width(250.dp),
                                         textAlign = TextAlign.Center
                                     ) },
                                     onClick = {
-                                        addViewModel.updateNumber(number)
+                                        addViewModel.updateNumber("$number$suffix")
                                         expanded = false
                                     }
                                 )

@@ -22,4 +22,7 @@ interface ClienteDao {
 
     @Query("SELECT * FROM Cliente WHERE id_cliente = :id")
     suspend fun getById(id: Int): Cliente?
+
+    @Query("DELETE FROM Cliente")
+    suspend fun deleteAll()
 }

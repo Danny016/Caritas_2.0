@@ -70,24 +70,24 @@ class Repository(
     
     fun getAllColores(): Flow<List<ProductoColor>> = colorDao.getAllColores()
     
-    suspend fun getColorByNumero(numero: Int): ProductoColor? = colorDao.getByNumero(numero)
+    suspend fun getColorByNumero(numero: String): ProductoColor? = colorDao.getByNumero(numero)
     
     // Blancas operations
-    suspend fun insertBlancas(blancas: Blancas) = withContext(Dispatchers.IO) {
+    suspend fun insertBlancas(blancas: ProductoBlanca) = withContext(Dispatchers.IO) {
         blancasDao.insert(blancas)
     }
     
-    suspend fun updateBlancas(blancas: Blancas) = withContext(Dispatchers.IO) {
+    suspend fun updateBlancas(blancas: ProductoBlanca) = withContext(Dispatchers.IO) {
         blancasDao.update(blancas)
     }
     
-    suspend fun deleteBlancas(blancas: Blancas) = withContext(Dispatchers.IO) {
+    suspend fun deleteBlancas(blancas: ProductoBlanca) = withContext(Dispatchers.IO) {
         blancasDao.delete(blancas)
     }
     
-    fun getAllBlancas(): Flow<List<Blancas>> = blancasDao.getAllBlancas()
+    fun getAllBlancas(): Flow<List<ProductoBlanca>> = blancasDao.getAllBlancas()
     
-    suspend fun getBlancasByNumero(numero: Int): Blancas? = blancasDao.getByNumero(numero)
+    suspend fun getBlancasByNumero(numero: String): ProductoBlanca? = blancasDao.getByNumero(numero)
     
     suspend fun deleteAllBlancas() = withContext(Dispatchers.IO) {
         blancasDao.deleteAll()
@@ -97,7 +97,45 @@ class Repository(
         colorDao.getAllColoresOnce()
     }
 
-    suspend fun getAllBlancasOnce(): List<Blancas> = withContext(Dispatchers.IO) {
+    suspend fun getAllBlancasOnce(): List<ProductoBlanca> = withContext(Dispatchers.IO) {
         blancasDao.getAllBlancasOnce()
+    }
+    
+    // Verification methods
+    suspend fun productExists(idProducto: String): Boolean = withContext(Dispatchers.IO) {
+        val color = getColorByNumero(idProducto)
+        val blanca = getBlancasByNumero(idProducto)
+        color != null || blanca != null
+    }
+    
+    suspend fun getAllProductNumbers(): List<String> = withContext(Dispatchers.IO) {
+        val colores = getAllColoresOnce()
+        val blancas = getAllBlancasOnce()
+        colores.map { it.numero } + blancas.map { it.numero }
+    }
+    
+    // Cleanup methods
+    suspend fun clearAllData() = withContext(Dispatchers.IO) {
+        try {
+            // Eliminar todos los pedidos primero (por las foreign keys)
+            pedidoDao.deleteAll()
+            // Eliminar todos los clientes
+            clienteDao.deleteAll()
+            // Eliminar todos los productos
+            colorDao.deleteAll()
+            blancasDao.deleteAll()
+        } catch (e: Exception) {
+            throw Exception("Error limpiando datos: ${e.message}")
+        }
+    }
+    
+    suspend fun reinitializeData() = withContext(Dispatchers.IO) {
+        try {
+            clearAllData()
+            val dataInitializer = DataInitializer(this@Repository)
+            dataInitializer.initializeSampleData()
+        } catch (e: Exception) {
+            throw Exception("Error reinicializando datos: ${e.message}")
+        }
     }
 } 

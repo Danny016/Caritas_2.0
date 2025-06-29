@@ -69,7 +69,7 @@ fun PriceScreen(
 
     val showDialog = remember { mutableStateOf(false) }
     var tipo by remember { mutableStateOf("Blancas") }
-    var numero by remember { mutableStateOf(0) }
+    var numero by remember { mutableStateOf("0B") }
     var nuevoPrecio by remember { mutableStateOf("") }
     var numeroExpanded by remember { mutableStateOf(false) }
     val scope = remember { CoroutineScope(Dispatchers.Main) }
@@ -166,6 +166,11 @@ fun PriceScreen(
                         backgroundColor = Color(0xFFE8F4FD)
                     )
                 }
+                
+                // Padding al final
+                item {
+                    androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                }
             }
         }
         // AlertDialog para modificar precios
@@ -196,7 +201,7 @@ fun PriceScreen(
                             modifier = Modifier.padding(4.dp)
                         ) {
                             OutlinedTextField(
-                                value = numero.toString(),
+                                value = numero,
                                 onValueChange = { },
                                 label = { Text("Número") },
                                 singleLine = true,
@@ -210,11 +215,12 @@ fun PriceScreen(
                                 expanded = numeroExpanded,
                                 onDismissRequest = { numeroExpanded = false }
                             ) {
+                                val suffix = if (tipo == "Blancas") "B" else "C"
                                 listOf(0, 1, 2, 3, 4, 5, 6, 7).forEach { n ->
                                     DropdownMenuItem(
-                                        text = { Text(n.toString()) },
+                                        text = { Text("$n$suffix") },
                                         onClick = { 
-                                            numero = n
+                                            numero = "$n$suffix"
                                             numeroExpanded = false
                                         }
                                     )

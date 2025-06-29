@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -76,12 +78,12 @@ fun OrderScreen(
 
     // State for AddPiecesDialog
     var selectedTipo by remember { mutableStateOf("Blanca") }
-    var selectedNumber by remember { mutableStateOf(0) }
+    var selectedNumber by remember { mutableStateOf("0B") }
     var cantidad by remember { mutableStateOf("") }
     var numberExpanded by remember { mutableStateOf(false) }
     
     val optionsRadioB = listOf("Blanca", "Color")
-    val optionsNumber = (0..7).toList()
+    val optionsNumber = listOf(0, 1, 2, 3, 4, 5, 6, 7)
 
     Column (modifier = Modifier
         .fillMaxSize(),
@@ -286,14 +288,14 @@ fun OrderScreen(
                     orderViewModel.hideAddPiecesDialog()
                     // Reset form
                     selectedTipo = "Blanca"
-                    selectedNumber = 0
+                    selectedNumber = "0B"
                     cantidad = ""
                 },
                 onConfirm = {
                     orderViewModel.addPiece(selectedTipo, selectedNumber, cantidad)
                     // Reset form
                     selectedTipo = "Blanca"
-                    selectedNumber = 0
+                    selectedNumber = "0B"
                     cantidad = ""
                 }
             )
@@ -421,8 +423,8 @@ fun ConfirmDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
 fun AddPiecesDialog(
     selectedTipo: String,
     onTipoChange: (String) -> Unit,
-    selectedNumber: Int,
-    onNumberChange: (Int) -> Unit,
+    selectedNumber: String,
+    onNumberChange: (String) -> Unit,
     cantidad: String,
     onCantidadChange: (String) -> Unit,
     numberExpanded: Boolean,
@@ -467,7 +469,7 @@ fun AddPiecesDialog(
                 ) {
                     OutlinedTextField(
                         readOnly = true,
-                        value = selectedNumber.toString(),
+                        value = selectedNumber,
                         onValueChange = {},
                         label = { Text("Selecciona un número") },
                         trailingIcon = {
@@ -481,15 +483,16 @@ fun AddPiecesDialog(
                         expanded = numberExpanded,
                         onDismissRequest = { onNumberExpandedChange(false) }
                     ) {
+                        val suffix = if (selectedTipo == "Blanca") "B" else "C"
                         optionsNumber.forEach { number ->
                             DropdownMenuItem(
                                 text = { Text(
-                                    text = number.toString(),
+                                    text = "$number$suffix",
                                     modifier = Modifier.width(200.dp),
                                     textAlign = TextAlign.Center
                                 ) },
                                 onClick = {
-                                    onNumberChange(number)
+                                    onNumberChange("$number$suffix")
                                     onNumberExpandedChange(false)
                                 }
                             )

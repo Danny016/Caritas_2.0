@@ -2,7 +2,7 @@ package com.example.caritas20.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.caritas20.Data.Blancas
+import com.example.caritas20.Data.ProductoBlanca
 import com.example.caritas20.Data.ProductoColor
 import com.example.caritas20.Data.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +13,10 @@ import kotlinx.coroutines.launch
 
 data class PriceUiState(
     val colores: List<ProductoColor> = emptyList(),
-    val blancas: List<Blancas> = emptyList(),
+    val blancas: List<ProductoBlanca> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val success: String? = null
 )
 
 class PriceViewModel(
@@ -26,51 +27,21 @@ class PriceViewModel(
     val uiState: StateFlow<PriceUiState> = _uiState.asStateFlow()
     
     init {
-        loadPrices()
+        loadPrecios()
     }
     
-    private fun loadPrices() {
+    private fun loadPrecios() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            try {
-                repository.getAllColores()
-                    .combine(repository.getAllBlancas()) { colores, blancas ->
-                        PriceUiState(
-                            colores = colores,
-                            blancas = blancas,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                    .collect { state ->
-                        _uiState.value = state
-                    }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "Error al cargar precios"
+            combine(
+                repository.getAllColores(),
+                repository.getAllBlancas()
+            ) { colores, blancas ->
+                PriceUiState(
+                    colores = colores,
+                    blancas = blancas,
                 )
-            }
-        }
-    }
-    
-    fun refreshPrices() {
-        loadPrices()
-    }
-    
-    fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
-    }
-    
-    fun updateBlancasPrice(blancas: Blancas) {
-        viewModelScope.launch {
-            try {
-                repository.updateBlancas(blancas)
-                refreshPrices()
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = e.message ?: "Error al actualizar precio de Blancas"
-                )
+            }.collect { state ->
+                _uiState.value = state
             }
         }
     }
@@ -79,12 +50,37 @@ class PriceViewModel(
         viewModelScope.launch {
             try {
                 repository.updateColor(color)
-                refreshPrices()
+                _uiState.value = _uiState.value.copy(
+                    success = "Precio de Color actualizado correctamente"
+                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = e.message ?: "Error al actualizar precio de Color"
                 )
             }
         }
+    }
+    
+    fun updateBlancasPrice(blancas: ProductoBlanca) {
+        viewModelScope.launch {
+            try {
+                repository.updateBlancas(blancas)
+                _uiState.value = _uiState.value.copy(
+                    success = "Precio de Blancas actualizado correctamente"
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = e.message ?: "Error al actualizar precio de Blancas"
+                )
+            }
+        }
+    }
+    
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(error = null)
+    }
+    
+    fun clearSuccess() {
+        _uiState.value = _uiState.value.copy(success = null)
     }
 } 

@@ -2,7 +2,7 @@ package com.example.caritas20.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.caritas20.Data.Blancas
+import com.example.caritas20.Data.ProductoBlanca
 import com.example.caritas20.Data.ProductoColor
 import com.example.caritas20.Data.Pedido
 import com.example.caritas20.Data.Repository
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 data class AddUiState(
     val selectedTipo: String = "Blanca",
-    val selectedNumber: Int = 0,
+    val selectedNumber: String = "0B",
     val cantidad: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -30,10 +30,20 @@ class AddViewModel(
     
     fun updateTipo(tipo: String) {
         _uiState.value = _uiState.value.copy(selectedTipo = tipo)
+        // Update selectedNumber based on tipo
+        val currentNumber = _uiState.value.selectedNumber.removeSuffix("B").removeSuffix("C")
+        val newNumber = if (tipo == "Blanca") "${currentNumber}B" else "${currentNumber}C"
+        _uiState.value = _uiState.value.copy(selectedNumber = newNumber)
     }
     
-    fun updateNumber(number: Int) {
-        _uiState.value = _uiState.value.copy(selectedNumber = number)
+    fun updateNumber(number: String) {
+        val suffix = if (_uiState.value.selectedTipo == "Blanca") "B" else "C"
+        val newNumber = if (number.endsWith("B") || number.endsWith("C")) {
+            number.removeSuffix("B").removeSuffix("C") + suffix
+        } else {
+            number + suffix
+        }
+        _uiState.value = _uiState.value.copy(selectedNumber = newNumber)
     }
     
     fun updateCantidad(cantidad: String) {
@@ -57,7 +67,7 @@ class AddViewModel(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val pedido = Pedido(
-                    id_producto = _uiState.value.selectedNumber.toString(),
+                    id_producto = _uiState.value.selectedNumber,
                     cantidad = cantidad,
                     id_cliente = _uiState.value.currentClienteId
                 )

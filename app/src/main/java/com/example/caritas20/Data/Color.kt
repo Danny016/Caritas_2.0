@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "producto_color")
 data class ProductoColor(
-    @PrimaryKey val numero: Int,  // 0 al 7
+    @PrimaryKey val numero: String,  // Formato: 0C, 1C, 2C, etc.
     val cantidad: Int,
     val precio: Double
 )

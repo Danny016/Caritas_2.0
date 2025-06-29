@@ -71,5 +71,8 @@ interface PedidoDao {
         ORDER BY Cliente.nombre
     """)
     fun getClientesConPedidos(): Flow<List<ClienteConPedidos>>
+    
+    @Query("DELETE FROM Pedido")
+    suspend fun deleteAll()
 }
 

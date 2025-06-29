@@ -6,23 +6,23 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BlancasDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(blancas: Blancas)
+    suspend fun insert(blancas: ProductoBlanca)
 
     @Update
-    suspend fun update(blancas: Blancas)
+    suspend fun update(blancas: ProductoBlanca)
 
     @Delete
-    suspend fun delete(blancas: Blancas)
+    suspend fun delete(blancas: ProductoBlanca)
 
-    @Query("SELECT * FROM Blancas")
-    fun getAllBlancas(): Flow<List<Blancas>>
+    @Query("SELECT * FROM producto_blanca")
+    fun getAllBlancas(): Flow<List<ProductoBlanca>>
 
-    @Query("SELECT * FROM Blancas")
-    suspend fun getAllBlancasOnce(): List<Blancas>
+    @Query("SELECT * FROM producto_blanca")
+    suspend fun getAllBlancasOnce(): List<ProductoBlanca>
 
-    @Query("SELECT * FROM Blancas WHERE numero = :numero")
-    suspend fun getByNumero(numero: Int): Blancas?
+    @Query("SELECT * FROM producto_blanca WHERE numero = :numero")
+    suspend fun getByNumero(numero: String): ProductoBlanca?
 
-    @Query("DELETE FROM Blancas")
+    @Query("DELETE FROM producto_blanca")
     suspend fun deleteAll()
 }

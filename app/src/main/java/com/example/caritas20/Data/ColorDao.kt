@@ -21,5 +21,8 @@ interface ColorDao {
     suspend fun getAllColoresOnce(): List<ProductoColor>
 
     @Query("SELECT * FROM producto_color WHERE numero = :numero")
-    suspend fun getByNumero(numero: Int): ProductoColor?
+    suspend fun getByNumero(numero: String): ProductoColor?
+
+    @Query("DELETE FROM producto_color")
+    suspend fun deleteAll()
 }

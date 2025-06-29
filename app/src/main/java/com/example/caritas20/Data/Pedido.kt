@@ -8,18 +8,6 @@ import androidx.room.PrimaryKey
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = ProductoColor::class,
-            parentColumns = ["numero"],
-            childColumns = ["id_producto"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Blancas::class,
-            parentColumns = ["numero"],
-            childColumns = ["id_producto"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
             entity = Cliente::class,
             parentColumns = ["id_cliente"],
             childColumns = ["id_cliente"],
@@ -33,7 +21,7 @@ import androidx.room.PrimaryKey
 )
 data class Pedido(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val id_producto: String, // Puede ser numero de ProductoColor o Blancas (guardado como String)
+    val id_producto: String, // Puede ser numero de ProductoColor o ProductoBlanca (guardado como String)
     val cantidad: Int,
     val id_cliente: Int
 )

@@ -3,6 +3,8 @@ package com.example.caritas20.ViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.caritas20.Data.PedidoConCliente
+import com.example.caritas20.Data.ProductoBlanca
+import com.example.caritas20.Data.ProductoColor
 import com.example.caritas20.Data.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +15,8 @@ data class DetailsUiState(
     val pedidosConCliente: List<PedidoConCliente> = emptyList(),
     val clienteName: String = "",
     val panaderia: String = "",
-    val preciosBlancas: List<com.example.caritas20.Data.Blancas> = emptyList(),
-    val preciosColores: List<com.example.caritas20.Data.ProductoColor> = emptyList(),
+    val preciosBlancas: List<ProductoBlanca> = emptyList(),
+    val preciosColores: List<ProductoColor> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val success: Boolean = false,
@@ -29,17 +31,19 @@ class DetailsViewModel(
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
     
     init {
-        loadPrecios()
+        loadData()
     }
     
-    private fun loadPrecios() {
+    private fun loadData() {
         viewModelScope.launch {
             try {
-                repository.getAllBlancas().collect { blancas ->
-                    _uiState.value = _uiState.value.copy(preciosBlancas = blancas)
+                repository.getAllPedidos().collect { pedidos ->
+                    _uiState.value = _uiState.value.copy(pedidosConCliente = pedidos)
                 }
             } catch (e: Exception) {
-                // Handle error silently for now
+                _uiState.value = _uiState.value.copy(
+                    error = e.message ?: "Error al cargar pedidos"
+                )
             }
         }
         
@@ -52,6 +56,20 @@ class DetailsViewModel(
                 // Handle error silently for now
             }
         }
+        
+        viewModelScope.launch {
+            try {
+                repository.getAllBlancas().collect { blancas ->
+                    _uiState.value = _uiState.value.copy(preciosBlancas = blancas)
+                }
+            } catch (e: Exception) {
+                // Handle error silently for now
+            }
+        }
+    }
+    
+    fun refreshData() {
+        loadData()
     }
     
     fun loadPedidosByCliente(idCliente: Int) {
@@ -127,16 +145,7 @@ class DetailsViewModel(
         }
     }
     
-    fun getPrecioBlanca(numero: Int): Double {
-        val blanca = _uiState.value.preciosBlancas.find { it.numero == numero }
-        return if (blanca != null && blanca.cantidad > 0) {
-            blanca.precio / blanca.cantidad // Precio por unidad
-        } else {
-            0.0
-        }
-    }
-    
-    fun getPrecioColor(numero: Int): Double {
+    fun getPrecioColor(numero: String): Double {
         val color = _uiState.value.preciosColores.find { it.numero == numero }
         return if (color != null && color.cantidad > 0) {
             color.precio / color.cantidad // Precio por unidad
@@ -145,24 +154,31 @@ class DetailsViewModel(
         }
     }
     
-    fun calcularSubtotalBlancas(): Double {
-        val blancas = _uiState.value.pedidosConCliente.filter { 
-            it.pedido.id_producto.toIntOrNull() != null 
-        }
-        return blancas.sumOf { pedidoConCliente ->
-            val numero = pedidoConCliente.pedido.id_producto.toInt()
-            val precioPorUnidad = getPrecioBlanca(numero)
-            pedidoConCliente.pedido.cantidad * precioPorUnidad
+    fun getPrecioBlanca(numero: String): Double {
+        val blanca = _uiState.value.preciosBlancas.find { it.numero == numero }
+        return if (blanca != null && blanca.cantidad > 0) {
+            blanca.precio / blanca.cantidad // Precio por unidad
+        } else {
+            0.0
         }
     }
     
     fun calcularSubtotalColores(): Double {
-        val colores = _uiState.value.pedidosConCliente.filter { 
-            it.pedido.id_producto.toIntOrNull() == null 
+        val colores = _uiState.value.pedidosConCliente.filter {
+            it.pedido.id_producto.endsWith("C")
         }
         return colores.sumOf { pedidoConCliente ->
-            val numero = pedidoConCliente.pedido.id_producto.toInt()
-            val precioPorUnidad = getPrecioColor(numero)
+            val precioPorUnidad = getPrecioColor(pedidoConCliente.pedido.id_producto)
+            pedidoConCliente.pedido.cantidad * precioPorUnidad
+        }
+    }
+    
+    fun calcularSubtotalBlancas(): Double {
+        val blancas = _uiState.value.pedidosConCliente.filter {
+            it.pedido.id_producto.endsWith("B")
+        }
+        return blancas.sumOf { pedidoConCliente ->
+            val precioPorUnidad = getPrecioBlanca(pedidoConCliente.pedido.id_producto)
             pedidoConCliente.pedido.cantidad * precioPorUnidad
         }
     }

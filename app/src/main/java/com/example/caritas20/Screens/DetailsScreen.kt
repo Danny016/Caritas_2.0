@@ -175,8 +175,8 @@ fun DetailsScreen(
                 }
                 
                 // Group orders by type (Blanca/Color)
-                val blancas = uiState.pedidosConCliente.filter { it.pedido.id_producto.toIntOrNull() != null }
-                val colores = uiState.pedidosConCliente.filter { it.pedido.id_producto.toIntOrNull() == null }
+                val blancas = uiState.pedidosConCliente.filter { it.pedido.id_producto.endsWith("B") }
+                val colores = uiState.pedidosConCliente.filter { it.pedido.id_producto.endsWith("C") }
                 
                 if (uiState.pedidosConCliente.isNotEmpty()) {
                     item {
@@ -184,11 +184,7 @@ fun DetailsScreen(
                         CombinedOrderTable(
                             blancas = blancas,
                             colores = colores,
-                            detailsViewModel = detailsViewModel,
-                            onDelete = { pedidoId ->
-                                pedidoToDelete = pedidoId
-                                showDeleteDialog = true
-                            }
+                            detailsViewModel = detailsViewModel
                         )
                     }
                 }
@@ -343,8 +339,7 @@ fun DetailsScreen(
 fun CombinedOrderTable(
     blancas: List<com.example.caritas20.Data.PedidoConCliente>,
     colores: List<com.example.caritas20.Data.PedidoConCliente>,
-    detailsViewModel: DetailsViewModel,
-    onDelete: (Int) -> Unit
+    detailsViewModel: DetailsViewModel
 ) {
     Card(
         modifier = Modifier
@@ -361,8 +356,7 @@ fun CombinedOrderTable(
         ) {
             ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
             blancas.forEach { pedidoConCliente ->
-                val numero = pedidoConCliente.pedido.id_producto.toInt()
-                val precioPorUnidad = detailsViewModel.getPrecioBlanca(numero)
+                val precioPorUnidad = detailsViewModel.getPrecioBlanca(pedidoConCliente.pedido.id_producto)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
                 ContentRow(
                     number = pedidoConCliente.pedido.id_producto,
@@ -373,8 +367,7 @@ fun CombinedOrderTable(
                 )
             }
             colores.forEach { pedidoConCliente ->
-                val numero = pedidoConCliente.pedido.id_producto.toInt()
-                val precioPorUnidad = detailsViewModel.getPrecioColor(numero)
+                val precioPorUnidad = detailsViewModel.getPrecioColor(pedidoConCliente.pedido.id_producto)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
                 ContentRow(
                     number = pedidoConCliente.pedido.id_producto,

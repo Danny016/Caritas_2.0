@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.caritas20.Data.Cliente
 import com.example.caritas20.Data.Pedido
 import com.example.caritas20.Data.PedidoConCliente
+import com.example.caritas20.Data.ProductoBlanca
 import com.example.caritas20.Data.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.delay
 
 // Data class for temporary pieces
 data class TempPiece(
-    val numero: Int,
+    val numero: String,
     val cantidad: Int,
     val tipo: String
 )
@@ -25,7 +26,7 @@ data class OrderUiState(
     val pedidos: List<PedidoConCliente> = emptyList(),
     val tempBlancas: List<TempPiece> = emptyList(),
     val tempColores: List<TempPiece> = emptyList(),
-    val preciosBlancas: List<com.example.caritas20.Data.Blancas> = emptyList(),
+    val preciosBlancas: List<ProductoBlanca> = emptyList(),
     val preciosColores: List<com.example.caritas20.Data.ProductoColor> = emptyList(),
     val showConfirmDialog: Boolean = false,
     val showAddPiecesDialog: Boolean = false,
@@ -110,6 +111,25 @@ class OrderViewModel(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
+                // Verificar que todos los productos existan
+                val allProducts = repository.getAllProductNumbers()
+                val tempProducts = _uiState.value.tempBlancas.map { it.numero } + 
+                                 _uiState.value.tempColores.map { it.numero }
+                
+                // Log de diagnóstico
+                android.util.Log.d("OrderViewModel", "Productos en BD: $allProducts")
+                android.util.Log.d("OrderViewModel", "Productos a insertar: $tempProducts")
+                
+                val missingProducts = tempProducts.filter { !allProducts.contains(it) }
+                if (missingProducts.isNotEmpty()) {
+                    android.util.Log.e("OrderViewModel", "Productos faltantes: $missingProducts")
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "Los siguientes productos no existen en la base de datos: ${missingProducts.joinToString(", ")}"
+                    )
+                    return@launch
+                }
+                
                 // Create and insert cliente
                 val cliente = Cliente(
                     nombre = _uiState.value.clienteName,
@@ -117,24 +137,27 @@ class OrderViewModel(
                 )
                 
                 val clienteId = repository.insertClienteAndGetId(cliente).toInt()
+                android.util.Log.d("OrderViewModel", "Cliente insertado con ID: $clienteId")
                 
                 // Insert blancas pieces
                 _uiState.value.tempBlancas.forEach { piece ->
                     val pedido = Pedido(
-                        id_producto = piece.numero.toString(),
+                        id_producto = piece.numero,
                         cantidad = piece.cantidad,
                         id_cliente = clienteId
                     )
+                    android.util.Log.d("OrderViewModel", "Insertando pedido blanca: ${pedido.id_producto}, cantidad: ${pedido.cantidad}")
                     repository.insertPedido(pedido)
                 }
                 
                 // Insert color pieces
                 _uiState.value.tempColores.forEach { piece ->
                     val pedido = Pedido(
-                        id_producto = piece.numero.toString(),
+                        id_producto = piece.numero,
                         cantidad = piece.cantidad,
                         id_cliente = clienteId
                     )
+                    android.util.Log.d("OrderViewModel", "Insertando pedido color: ${pedido.id_producto}, cantidad: ${pedido.cantidad}")
                     repository.insertPedido(pedido)
                 }
                 
@@ -145,9 +168,10 @@ class OrderViewModel(
                     createdCliente = cliente
                 )
             } catch (e: Exception) {
+                android.util.Log.e("OrderViewModel", "Error al confirmar pedido", e)
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Error al confirmar pedido"
+                    error = "Error al confirmar pedido: ${e.message}"
                 )
             }
         }
@@ -165,7 +189,7 @@ class OrderViewModel(
         _uiState.value = OrderUiState()
     }
     
-    fun addPiece(tipo: String, numero: Int, cantidad: String) {
+    fun addPiece(tipo: String, numero: String, cantidad: String) {
         if (cantidad.isBlank()) {
             _uiState.value = _uiState.value.copy(
                 error = "Por favor ingrese la cantidad"
@@ -202,7 +226,7 @@ class OrderViewModel(
         }
     }
     
-    fun getPrecioBlanca(numero: Int): Double {
+    fun getPrecioBlanca(numero: String): Double {
         val blanca = _uiState.value.preciosBlancas.find { it.numero == numero }
         return if (blanca != null && blanca.cantidad > 0) {
             blanca.precio / blanca.cantidad // Precio por unidad
@@ -211,7 +235,7 @@ class OrderViewModel(
         }
     }
     
-    fun getPrecioColor(numero: Int): Double {
+    fun getPrecioColor(numero: String): Double {
         val color = _uiState.value.preciosColores.find { it.numero == numero }
         return if (color != null && color.cantidad > 0) {
             color.precio / color.cantidad // Precio por unidad
