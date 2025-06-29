@@ -25,15 +25,11 @@ class ModifyViewModel(
     private val _uiState = MutableStateFlow(ModifyUiState())
     val uiState: StateFlow<ModifyUiState> = _uiState.asStateFlow()
     
-    init {
-        loadPedidos()
-    }
-    
-    private fun loadPedidos() {
+    fun loadPedidosByCliente(clienteId: Int) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                repository.getAllPedidos().collect { pedidos ->
+                repository.getPedidosByCliente(clienteId).collect { pedidos ->
                     _uiState.value = _uiState.value.copy(
                         pedidos = pedidos,
                         isLoading = false,
@@ -62,7 +58,9 @@ class ModifyViewModel(
                     isLoading = false,
                     success = true
                 )
-                loadPedidos() // Refresh the list
+                _uiState.value.selectedPedido?.let { selected ->
+                    loadPedidosByCliente(selected.pedido.id_cliente)
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -81,7 +79,9 @@ class ModifyViewModel(
                     isLoading = false,
                     success = true
                 )
-                loadPedidos() // Refresh the list
+                _uiState.value.selectedPedido?.let { selected ->
+                    loadPedidosByCliente(selected.pedido.id_cliente)
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -100,6 +100,8 @@ class ModifyViewModel(
     }
     
     fun refreshPedidos() {
-        loadPedidos()
+        _uiState.value.selectedPedido?.let { selected ->
+            loadPedidosByCliente(selected.pedido.id_cliente)
+        }
     }
 } 

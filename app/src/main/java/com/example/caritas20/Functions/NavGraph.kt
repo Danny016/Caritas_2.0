@@ -35,8 +35,14 @@ fun Nav(viewModelFactory: ViewModelFactory){
         composable(route  ="Add"){
             AddScreen(NavController, viewModelFactory = viewModelFactory)
         }
-        composable(route = "Modify"){
-            ModifyScreen(NavController, viewModelFactory = viewModelFactory)
+        composable(
+            route = "Modify/{clienteId}",
+            arguments = listOf(
+                navArgument("clienteId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val clienteId = backStackEntry.arguments?.getInt("clienteId") ?: 0
+            ModifyScreen(NavController, viewModelFactory, clienteId)
         }
         composable(
             route = "Details/{clienteId}",

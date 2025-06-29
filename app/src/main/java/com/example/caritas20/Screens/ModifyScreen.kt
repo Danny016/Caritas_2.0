@@ -56,10 +56,16 @@ import com.example.caritas20.ViewModels.ViewModelFactory
 @Composable
 fun ModifyScreen(
     navController: NavController,
-    viewModelFactory: ViewModelFactory
+    viewModelFactory: ViewModelFactory,
+    clienteId: Int
 ){
     val modifyViewModel: ModifyViewModel = viewModel(factory = viewModelFactory)
     val uiState by modifyViewModel.uiState.collectAsState()
+
+    // Load orders for the specific client
+    LaunchedEffect(clienteId) {
+        modifyViewModel.loadPedidosByCliente(clienteId)
+    }
 
     Column (modifier = Modifier
         .fillMaxSize(),
@@ -72,7 +78,7 @@ fun ModifyScreen(
             title = { Text(text = "Modificar Pedidos", ) },
             navigationIcon = {
                 IconButton(onClick = {
-                    navController.navigate("Home")
+                    navController.navigateUp()
                 }) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
                 }

@@ -247,8 +247,11 @@ fun DetailsScreen(
                     ) {
                         Button(
                             onClick = {
-                                // Navigate to modify screen
-                                navController.navigate("Modify")
+                                // Navigate to modify screen with client ID
+                                if (uiState.pedidosConCliente.isNotEmpty()) {
+                                    val clienteId = uiState.pedidosConCliente.first().pedido.id_cliente
+                                    navController.navigate("Modify/$clienteId")
+                                }
                             },
                             modifier = Modifier.weight(1f).padding(end = 8.dp),
                             colors = ButtonDefaults.buttonColors(
