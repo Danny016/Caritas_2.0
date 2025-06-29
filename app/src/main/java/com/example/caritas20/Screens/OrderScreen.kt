@@ -342,7 +342,7 @@ fun OrderTable(){
                 .padding(16.dp)
                 .fillMaxWidth()
         ){
-            ContentRow("No.","Cantidad", "Subtotal", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.","Cantidad", "Subtotal")
         }
     }
 }
@@ -369,7 +369,7 @@ fun TempOrderTable(
                 .padding(8.dp)
                 .fillMaxWidth()
         ){
-            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
+            ContentRow("No.", "Cant.", "Precio", "Subtotal")
             pieces.forEach { piece ->
                 val precioPorUnidad = if (tipo == "Blanca") {
                     orderViewModel.getPrecioBlanca(piece.numero)

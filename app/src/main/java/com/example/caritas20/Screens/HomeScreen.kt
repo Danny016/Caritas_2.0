@@ -205,7 +205,7 @@ fun PedidoCard(
             .clickable { onCardClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F4FD))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE9C7EE))
     ) {
         Column(
             modifier = Modifier
@@ -215,7 +215,7 @@ fun PedidoCard(
             Text(
                 text = "Pedido de:",
                 fontSize = 14.sp,
-                color = Color.Gray,
+                color = Color.Black,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
@@ -227,13 +227,13 @@ fun PedidoCard(
             Text(
                 text = panaderia,
                 fontSize = 16.sp,
-                color = Color(0xFF666666),
+                color = Color.Black,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = "Total de pedidos: $totalPedidos",
                 fontSize = 14.sp,
-                color = Color(0xFF888888),
+                color = Color.Black,
                 fontWeight = FontWeight.Medium
             )
         }

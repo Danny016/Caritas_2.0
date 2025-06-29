@@ -146,7 +146,7 @@ fun PriceScreen(
                 // Tabla Blancas
                 item {
                     Text("Precios Blancas:", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
-                    ContentRow("Número", "Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
+                    ContentRow("Número", "Cantidad", "Precio")
                 }
                     items(uiState.blancas.size) { idx ->
                         val blanca = uiState.blancas[idx]
@@ -161,7 +161,7 @@ fun PriceScreen(
                 // Tabla Color
                 item {
                     Text("Precios Color:", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
-                    ContentRow("Número", "Cantidad", "Precio", backgroundColor = Color(0xFFB38BEE))
+                    ContentRow("Número", "Cantidad", "Precio")
                 }
                 items(uiState.colores.size) { idx ->
                     val color = uiState.colores[idx]
