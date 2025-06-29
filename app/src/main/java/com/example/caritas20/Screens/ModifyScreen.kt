@@ -1,6 +1,5 @@
 package com.example.caritas20.Screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,9 +56,6 @@ import androidx.navigation.NavController
 import com.example.caritas20.R
 import com.example.caritas20.ViewModels.ModifyViewModel
 import com.example.caritas20.ViewModels.ViewModelFactory
-import com.example.caritas20.Functions.ContentRow
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.TextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +72,7 @@ fun ModifyScreen(
     var pedidoToEdit by remember { mutableStateOf<com.example.caritas20.Data.PedidoConCliente?>(null) }
     var newCantidad by remember { mutableStateOf("") }
 
-    // Load orders for the specific client
+    // Cargar pedidos para el cliente específico
     LaunchedEffect(clienteId) {
         modifyViewModel.loadPedidosByCliente(clienteId)
     }
@@ -177,7 +174,7 @@ fun ModifyScreen(
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
-                                // Header de la tabla
+                                // Encabezado de la tabla
                                 TableRow("Campo", "Valor", backgroundColor = Color(0xFFE8C6EC))
                                 
                                 // Tipo de producto
@@ -288,11 +285,11 @@ fun ModifyScreen(
         }
     }
     
-    // Handle success
+    // Manejar éxito
     LaunchedEffect(uiState.success) {
         if (uiState.success) {
             modifyViewModel.clearSuccess()
-            // Could show a success message or navigate
+            // Podría mostrar un mensaje de éxito o navegar
         }
     }
 

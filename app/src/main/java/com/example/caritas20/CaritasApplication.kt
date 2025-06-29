@@ -7,21 +7,21 @@ import com.example.caritas20.Data.Repository
 
 class CaritasApplication : Application() {
     
-    // Database instance
+    // Instancia de la base de datos
     lateinit var database: AppDatabase
         private set
     
-    // Repository instance
+    // Instancia del repositorio
     lateinit var repository: Repository
         private set
     
     override fun onCreate() {
         super.onCreate()
         
-        // Initialize database
+        // Inicializar base de datos
         database = AppDatabase.getDatabase(this)
         
-        // Initialize repository
+        // Inicializar repositorio
         repository = Repository(
             pedidoDao = database.pedidoDao(),
             clienteDao = database.clienteDao(),
@@ -29,7 +29,7 @@ class CaritasApplication : Application() {
             blancasDao = database.blancasDao()
         )
         
-        // Initialize sample data
+        // Inicializar datos de muestra
         val dataInitializer = DataInitializer(repository)
         dataInitializer.initializeSampleData()
     }

@@ -3,7 +3,6 @@ package com.example.caritas20.Screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -176,7 +174,7 @@ fun DetailsScreen(
                     Text("Pedido:", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
                 }
                 
-                // Group orders by type (Blanca/Color)
+                // Agrupar pedidos por tipo (Blanca/Color)
                 val blancas = uiState.pedidosConCliente.filter { it.pedido.id_producto.endsWith("B") }
                 val colores = uiState.pedidosConCliente.filter { it.pedido.id_producto.endsWith("C") }
                 
@@ -353,10 +351,10 @@ fun DetailsScreen(
                     TextButton(
                         onClick = {
                             if (pedidoToDelete == -1) {
-                                // Delete all orders for this client
+                                // Eliminar todos los pedidos de este cliente
                                 detailsViewModel.deleteAllPedidos()
                             } else {
-                                // Delete specific order
+                                // Eliminar pedido específico
                                 pedidoToDelete?.let { detailsViewModel.deletePedido(it) }
                             }
                             showDeleteDialog = false

@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
 
-// Data class for temporary pieces
+// Clase de datos para piezas temporales
 data class TempPiece(
     val numero: String,
     val cantidad: Int,
@@ -135,7 +134,7 @@ class OrderViewModel(
                     return@launch
                 }
                 
-                // Use existing client ID or create new client
+                // Usar ID de cliente existente o crear uno nuevo
                 val clienteId = if (_uiState.value.existingClienteId != null) {
                     _uiState.value.existingClienteId!!
                 } else {
@@ -149,7 +148,7 @@ class OrderViewModel(
                 
                 android.util.Log.d("OrderViewModel", "Usando cliente ID: $clienteId")
                 
-                // Insert blancas pieces
+                // Insertar piezas blancas
                 _uiState.value.tempBlancas.forEach { piece ->
                     val pedido = Pedido(
                         id_producto = piece.numero,
@@ -160,7 +159,7 @@ class OrderViewModel(
                     repository.insertPedido(pedido)
                 }
                 
-                // Insert color pieces
+                // Insertar piezas color
                 _uiState.value.tempColores.forEach { piece ->
                     val pedido = Pedido(
                         id_producto = piece.numero,
