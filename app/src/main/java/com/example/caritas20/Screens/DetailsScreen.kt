@@ -179,13 +179,26 @@ fun DetailsScreen(
                 val colores = uiState.pedidosConCliente.filter { it.pedido.id_producto.endsWith("C") }
                 
                 if (uiState.pedidosConCliente.isNotEmpty()) {
-                    item {
-                        Text("Detalles del Pedido:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
-                        CombinedOrderTable(
-                            blancas = blancas,
-                            colores = colores,
-                            detailsViewModel = detailsViewModel
-                        )
+                    // Tabla Blancas
+                    if (blancas.isNotEmpty()) {
+                        item {
+                            Text("Pedidos Blancas:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
+                            BlancasOrderTable(
+                                blancas = blancas,
+                                detailsViewModel = detailsViewModel
+                            )
+                        }
+                    }
+                    
+                    // Tabla Color
+                    if (colores.isNotEmpty()) {
+                        item {
+                            Text("Pedidos Color:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp))
+                            ColoresOrderTable(
+                                colores = colores,
+                                detailsViewModel = detailsViewModel
+                            )
+                        }
                     }
                 }
                 
@@ -336,9 +349,8 @@ fun DetailsScreen(
 }
 
 @Composable
-fun CombinedOrderTable(
+fun BlancasOrderTable(
     blancas: List<com.example.caritas20.Data.PedidoConCliente>,
-    colores: List<com.example.caritas20.Data.PedidoConCliente>,
     detailsViewModel: DetailsViewModel
 ) {
     Card(
@@ -366,6 +378,53 @@ fun CombinedOrderTable(
                     backgroundColor = Color(0xFFF8F8F8)
                 )
             }
+            
+            // Subtotal de la tabla
+            val subtotal = detailsViewModel.calcularSubtotalBlancas()
+            
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Subtotal Blancas:",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF333333)
+                )
+                Text(
+                    text = "$${String.format("%.2f", subtotal)}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF66BFFF)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ColoresOrderTable(
+    colores: List<com.example.caritas20.Data.PedidoConCliente>,
+    detailsViewModel: DetailsViewModel
+) {
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            ContentRow("No.", "Cant.", "Precio", "Subtotal", backgroundColor = Color(0xFFB38BEE))
             colores.forEach { pedidoConCliente ->
                 val precioPorUnidad = detailsViewModel.getPrecioColor(pedidoConCliente.pedido.id_producto)
                 val subtotalFila = pedidoConCliente.pedido.cantidad * precioPorUnidad
@@ -379,7 +438,7 @@ fun CombinedOrderTable(
             }
             
             // Subtotal de la tabla
-            val subtotal = detailsViewModel.calcularSubtotalBlancas() + detailsViewModel.calcularSubtotalColores()
+            val subtotal = detailsViewModel.calcularSubtotalColores()
             
             Row(
                 modifier = Modifier
@@ -389,7 +448,7 @@ fun CombinedOrderTable(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Subtotal Total:",
+                    text = "Subtotal Color:",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF333333)
