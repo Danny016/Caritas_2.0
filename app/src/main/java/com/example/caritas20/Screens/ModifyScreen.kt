@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -38,6 +39,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +56,9 @@ import androidx.navigation.NavController
 import com.example.caritas20.R
 import com.example.caritas20.ViewModels.ModifyViewModel
 import com.example.caritas20.ViewModels.ViewModelFactory
+import com.example.caritas20.Functions.ContentRow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.TextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +69,11 @@ fun ModifyScreen(
 ){
     val modifyViewModel: ModifyViewModel = viewModel(factory = viewModelFactory)
     val uiState by modifyViewModel.uiState.collectAsState()
+
+    // Estado para el AlertDialog de edición
+    var showEditDialog by remember { mutableStateOf(false) }
+    var pedidoToEdit by remember { mutableStateOf<com.example.caritas20.Data.PedidoConCliente?>(null) }
+    var newCantidad by remember { mutableStateOf("") }
 
     // Load orders for the specific client
     LaunchedEffect(clienteId) {
@@ -121,7 +133,36 @@ fun ModifyScreen(
                     }
                 } else {
                     item {
-                        Text("Pedidos: ${uiState.pedidos.size}", fontSize = 24.sp, modifier = Modifier.padding(16.dp))
+                        Text("Datos del Cliente:", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
+                        
+                        Card(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F8FF))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Nombre: ${uiState.pedidos.first().cliente?.nombre ?: "N/A"}",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                Text(
+                                    text = "Panadería: ${uiState.pedidos.first().cliente?.panaderia ?: "N/A"}",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                        
+                        Text("Pedidos:", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
                     }
                     
                     items(uiState.pedidos) { pedido ->
@@ -136,17 +177,54 @@ fun ModifyScreen(
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
-                                Text("Cliente: ${pedido.cliente?.nombre ?: "N/A"}", fontSize = 18.sp)
-                                Text("Panadería: ${pedido.cliente?.panaderia ?: "N/A"}", fontSize = 16.sp)
-                                Text("Cantidad: ${pedido.pedido.cantidad}", fontSize = 16.sp)
-                                Text("Producto ID: ${pedido.pedido.id_producto}", fontSize = 14.sp)
+                                // Header de la tabla
+                                TableRow("Campo", "Valor", backgroundColor = Color(0xFFB38BEE))
                                 
+                                // Tipo de producto
+                                TableRow(
+                                    field = "Tipo",
+                                    value = if (pedido.pedido.id_producto.endsWith("B")) "Blanca" else "Color"
+                                )
+                                // Datos del pedido en formato tabla
+                                TableRow(
+                                    field = "Producto",
+                                    value = pedido.pedido.id_producto
+                                )
+                                TableRow(
+                                    field = "Cantidad",
+                                    value = pedido.pedido.cantidad.toString()
+                                )
+                                
+                                // Calcular precio y subtotal
+                                val precioPorUnidad = if (pedido.pedido.id_producto.endsWith("B")) {
+                                    modifyViewModel.getPrecioBlanca(pedido.pedido.id_producto)
+                                } else {
+                                    modifyViewModel.getPrecioColor(pedido.pedido.id_producto)
+                                }
+                                val subtotal = pedido.pedido.cantidad * precioPorUnidad
+                                
+                                TableRow(
+                                    field = "Precio Unit.",
+                                    value = "$${String.format("%.2f", precioPorUnidad)}"
+                                )
+                                TableRow(
+                                    field = "Subtotal",
+                                    value = "$${String.format("%.2f", subtotal)}"
+                                )
+                                
+                                // Botones de acción
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp),
                                     horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
                                     Button(
-                                        onClick = { modifyViewModel.selectPedido(pedido) },
+                                        onClick = {
+                                            pedidoToEdit = pedido
+                                            newCantidad = pedido.pedido.cantidad.toString()
+                                            showEditDialog = true
+                                        },
                                         modifier = Modifier.wrapContentSize(),
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = Color(0xFF66BFFF)
@@ -172,6 +250,39 @@ fun ModifyScreen(
                             }
                         }
                     }
+                    
+                    // Total General
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF66BFFF))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "TOTAL A PAGAR",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "$${String.format("%.2f", modifyViewModel.calcularTotal())}",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -182,6 +293,109 @@ fun ModifyScreen(
         if (uiState.success) {
             modifyViewModel.clearSuccess()
             // Could show a success message or navigate
+        }
+    }
+
+    // AlertDialog para editar cantidad
+    if (showEditDialog && pedidoToEdit != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showEditDialog = false
+                pedidoToEdit = null
+            },
+            title = { Text("Editar Cantidad") },
+            text = {
+                Column {
+                    Text("Producto: ${pedidoToEdit?.pedido?.id_producto}")
+                    OutlinedTextField(
+                        value = newCantidad,
+                        onValueChange = { newCantidad = it.filter { c -> c.isDigit() } },
+                        label = { Text("Cantidad") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val cantidadInt = newCantidad.toIntOrNull()
+                        if (cantidadInt != null && cantidadInt > 0 && pedidoToEdit != null) {
+                            val pedidoEditado = pedidoToEdit!!.pedido.copy(cantidad = cantidadInt)
+                            modifyViewModel.updatePedido(pedidoEditado)
+                            showEditDialog = false
+                            pedidoToEdit = null
+                        }
+                    }
+                ) {
+                    Text("Guardar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showEditDialog = false
+                        pedidoToEdit = null
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TableRow(
+    field: String,
+    value: String,
+    backgroundColor: Color = Color(0xFFF0F0F0)
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 1.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = field, 
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .padding(1.dp)
+                .weight(1f),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(6.dp),
+            colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = value, 
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
