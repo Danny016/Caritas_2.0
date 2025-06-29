@@ -33,7 +33,8 @@ data class OrderUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val success: Boolean = false,
-    val createdCliente: Cliente? = null
+    val createdCliente: Cliente? = null,
+    val existingClienteId: Int? = null
 )
 
 class OrderViewModel(
@@ -75,6 +76,10 @@ class OrderViewModel(
     
     fun updatePanaderia(panaderia: String) {
         _uiState.value = _uiState.value.copy(panaderia = panaderia)
+    }
+    
+    fun setExistingClienteId(clienteId: Int) {
+        _uiState.value = _uiState.value.copy(existingClienteId = clienteId)
     }
     
     fun showConfirmDialog() {
@@ -130,14 +135,19 @@ class OrderViewModel(
                     return@launch
                 }
                 
-                // Create and insert cliente
-                val cliente = Cliente(
-                    nombre = _uiState.value.clienteName,
-                    panaderia = _uiState.value.panaderia
-                )
+                // Use existing client ID or create new client
+                val clienteId = if (_uiState.value.existingClienteId != null) {
+                    _uiState.value.existingClienteId!!
+                } else {
+                    // Create and insert new cliente
+                    val cliente = Cliente(
+                        nombre = _uiState.value.clienteName,
+                        panaderia = _uiState.value.panaderia
+                    )
+                    repository.insertClienteAndGetId(cliente).toInt()
+                }
                 
-                val clienteId = repository.insertClienteAndGetId(cliente).toInt()
-                android.util.Log.d("OrderViewModel", "Cliente insertado con ID: $clienteId")
+                android.util.Log.d("OrderViewModel", "Usando cliente ID: $clienteId")
                 
                 // Insert blancas pieces
                 _uiState.value.tempBlancas.forEach { piece ->
@@ -165,7 +175,10 @@ class OrderViewModel(
                     isLoading = false,
                     success = true,
                     showConfirmDialog = false,
-                    createdCliente = cliente
+                    createdCliente = Cliente(
+                        nombre = _uiState.value.clienteName,
+                        panaderia = _uiState.value.panaderia
+                    )
                 )
             } catch (e: Exception) {
                 android.util.Log.e("OrderViewModel", "Error al confirmar pedido", e)

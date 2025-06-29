@@ -32,6 +32,19 @@ fun Nav(viewModelFactory: ViewModelFactory){
         composable (route = "Order") {
             OrderScreen(NavController, viewModelFactory = viewModelFactory)
         }
+        composable(
+            route = "Order/{clienteId}/{clienteName}/{panaderia}",
+            arguments = listOf(
+                navArgument("clienteId") { type = NavType.IntType },
+                navArgument("clienteName") { type = NavType.StringType },
+                navArgument("panaderia") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val clienteId = backStackEntry.arguments?.getInt("clienteId") ?: 0
+            val clienteName = backStackEntry.arguments?.getString("clienteName") ?: ""
+            val panaderia = backStackEntry.arguments?.getString("panaderia") ?: ""
+            OrderScreen(NavController, viewModelFactory, clienteId, clienteName, panaderia)
+        }
         composable(route  ="Add"){
             AddScreen(NavController, viewModelFactory = viewModelFactory)
         }

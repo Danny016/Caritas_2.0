@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -239,12 +240,40 @@ fun DetailsScreen(
                 
                 // Action buttons
                 item {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        Button(
+                            onClick = {
+                                // Navigate to order screen to add pieces with client data
+                                if (uiState.pedidosConCliente.isNotEmpty()) {
+                                    val clienteId = uiState.pedidosConCliente.first().pedido.id_cliente
+                                    val clienteName = uiState.clienteName
+                                    val panaderia = uiState.panaderia
+                                    navController.navigate("Order/$clienteId/$clienteName/$panaderia")
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(2.dp, Color.Black)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = null,
+                                modifier = Modifier.padding(8.dp).size(24.dp),
+                                Color.White
+                            )
+                            Text("Agregar Piezas")
+                        }
+                        
                         Button(
                             onClick = {
                                 // Navigate to modify screen with client ID
@@ -253,7 +282,7 @@ fun DetailsScreen(
                                     navController.navigate("Modify/$clienteId")
                                 }
                             },
-                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF66BFFF),
                                 contentColor = Color.Black
@@ -278,7 +307,7 @@ fun DetailsScreen(
                                     showDeleteDialog = true
                                 }
                             },
-                            modifier = Modifier.weight(1f).padding(start = 8.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFFF6B6B),
                                 contentColor = Color.White

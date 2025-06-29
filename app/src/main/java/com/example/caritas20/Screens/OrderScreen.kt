@@ -71,7 +71,10 @@ import com.example.caritas20.ViewModels.ViewModelFactory
 @Composable
 fun OrderScreen(
     navController: NavController,
-    viewModelFactory: ViewModelFactory
+    viewModelFactory: ViewModelFactory,
+    clienteId: Int = 0,
+    clienteName: String = "",
+    panaderia: String = ""
 ){
     val orderViewModel: OrderViewModel = viewModel(factory = viewModelFactory)
     val uiState by orderViewModel.uiState.collectAsState()
@@ -84,6 +87,19 @@ fun OrderScreen(
     
     val optionsRadioB = listOf("Blanca", "Color")
     val optionsNumber = listOf(0, 1, 2, 3, 4, 5, 6, 7)
+
+    // Pre-fill client data if provided
+    LaunchedEffect(clienteId, clienteName, panaderia) {
+        if (clienteName.isNotEmpty()) {
+            orderViewModel.updateClienteName(clienteName)
+        }
+        if (panaderia.isNotEmpty()) {
+            orderViewModel.updatePanaderia(panaderia)
+        }
+        if (clienteId > 0) {
+            orderViewModel.setExistingClienteId(clienteId)
+        }
+    }
 
     Column (modifier = Modifier
         .fillMaxSize(),
